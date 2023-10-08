@@ -1,0 +1,1 @@
+select * from temp where temp.id = 1 and temp.name = "name";

@@ -12,18 +12,19 @@ public class SqlFieldInjectorImpl implements SqlFieldInjector {
     @Override
     public void run() {
         try{
-            var is = new FileInputStream("build/classes/java/main/yamert89/snoopy/Simple.class");
+            var is = new FileInputStream("snoopy_compile/build/classes/java/main/yamert89/snoopy/Simple.class");
             var reader = new ClassReader(is);
             var writer = new ClassWriter(reader, 0);
-            reader.accept(new InjectFieldVisitor(Opcodes.ASM9, writer), 0);
-            var bytes = writer.toByteArray();
-            var file = new File("build/classes/java/main/yamert89/snoopy/Simple.class");
+            InjectFieldVisitor injectFieldVisitor = new InjectFieldVisitor(Opcodes.ASM9, writer);
+            reader.accept(injectFieldVisitor, 0);
+            /*var bytes = writer.toByteArray();
+            var file = new File("snoopy_compile/build/classes/java/main/yamert89/snoopy/Simple.class");
             is.close();
             file.delete();
             file.createNewFile();
             var out = new FileOutputStream(file);
             out.write(bytes);
-            out.close();
+            out.close();*/
         }catch (Exception e){
             e.printStackTrace();
         }
