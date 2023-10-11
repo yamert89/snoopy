@@ -1,4 +1,4 @@
-package yamert89.snoopy;
+package yamert89.snoopy.compile;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

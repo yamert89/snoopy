@@ -1,4 +1,4 @@
-package yamert89.snoopy;
+package yamert89.snoopy.compile;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.FieldVisitor;

@@ -1,5 +1,9 @@
 package yamert89.snoopy;
 
+import yamert89.snoopy.compile.Mapper;
+import yamert89.snoopy.compile.ReplaceSql;
+
+@ReplaceSql(fieldsStartWith = "SQL")
 public class Simple {
 
     @Mapper(SMapper.class)

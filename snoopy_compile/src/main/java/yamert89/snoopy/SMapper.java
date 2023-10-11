@@ -1,5 +1,7 @@
 package yamert89.snoopy;
 
+import yamert89.snoopy.compile.Required;
+
 public class SMapper {
 
     @Required
