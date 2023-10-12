@@ -12,9 +12,9 @@ public class ClassScanner {
     private final String basePath;
     private final String rootPath;
     private final Set<String> classFiles = new HashSet<>();
-    public ClassScanner(String basePath, String rootPath) {
+    public ClassScanner(String basePath) {
         this.basePath = basePath;
-        this.rootPath = rootPath;
+        this.rootPath = new File("").getAbsolutePath();
     }
 
     public void scanAndHandle() throws IOException {

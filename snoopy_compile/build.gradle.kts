@@ -1,3 +1,6 @@
+import org.gradle.jvm.tasks.Jar
+
+
 plugins {
     id("java")
 }
@@ -20,4 +23,27 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+val jarName = "snoopy_compile.jar"
+
+tasks{
+    jar{
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        archiveFileName.set(jarName)
+
+        from(arrayOf(
+            //configurations.runtimeClasspath.get().files.map{ if(it.isDirectory) it else zipTree(it)},
+            configurations.compileClasspath.get().files.map{ if(it.isDirectory) it else zipTree(it)},
+        ))
+    }
+
+    register("copyJar"){
+        dependsOn("jar")
+        println("$rootDir/testProject/libs/$jarName")
+        copy{
+            from("$buildDir/libs/$jarName")
+            into("$rootDir/testProject/libs/")
+        }
+    }
 }
