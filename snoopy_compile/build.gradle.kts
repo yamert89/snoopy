@@ -1,12 +1,11 @@
-import org.gradle.jvm.tasks.Jar
-
 
 plugins {
     id("java")
+    id("maven-publish")
 }
 
 group = "yamert89.snoopy"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -25,6 +24,18 @@ tasks.test {
     useJUnitPlatform()
 }
 
+publishing{
+    repositories{
+        maven("../../_gradle-plugins-repository")
+    }
+    publications {
+        create<MavenPublication>("com"){
+            //from(components["java"])
+            artifact(tasks.jar)
+        }
+    }
+}
+
 val jarName = "snoopy_compile.jar"
 
 tasks{
@@ -33,17 +44,16 @@ tasks{
         archiveFileName.set(jarName)
 
         from(arrayOf(
-            //configurations.runtimeClasspath.get().files.map{ if(it.isDirectory) it else zipTree(it)},
             configurations.compileClasspath.get().files.map{ if(it.isDirectory) it else zipTree(it)},
         ))
     }
 
     register("copyJar"){
         dependsOn("jar")
-        println("$rootDir/testProject/libs/$jarName")
+        delete("$rootDir/snoopy_gradle_plugin/libs/$jarName")
         copy{
             from("$buildDir/libs/$jarName")
-            into("$rootDir/testProject/libs/")
+            into("$rootDir/snoopy_gradle_plugin/libs/")
         }
     }
 }
