@@ -29,11 +29,16 @@ publishing.repositories.maven("../../_gradle-plugins-repository")
 
 tasks {
     jar{
-        dependsOn(":snoopy_compile:copyJar")
+       // duplicatesStrategy = DuplicatesStrategy.WARN
 
-        from("libs/")
+        from(configurations.compileClasspath.get().files
+            .filter { it.name == "snoopy_compile.jar" }
+            .map{ if(it.isDirectory) it else zipTree(it)})
+        //dependsOn(":snoopy_compile:copyJar")
+
+        /*from("libs/")
         manifest{
-            attributes("Class-Path" to "libs/snoopy_compile.jar")
-        }
+            attributes("Class-Path" to "snoopy_compile.jar")
+        }*/
     }
 }

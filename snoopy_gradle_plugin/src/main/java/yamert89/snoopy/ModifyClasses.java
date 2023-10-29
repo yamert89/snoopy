@@ -10,8 +10,10 @@ public class ModifyClasses extends DefaultTask {
 
     @TaskAction
     public void execute() {
-        Object basePackage = getProject().getProperties().get("rootPackage");
-        ClassScanner scanner = new ClassScanner(basePackage == null ? "" : (String) basePackage);
+        String basePackage = getProject().getExtensions().findByType(SnoopyPluginExtension.class).getBasePackage().getOrElse("");
+        String rootPath = getProject().getExtensions().findByType(SnoopyPluginExtension.class).getRootPath().getOrElse("");
+        System.out.println("Task snoopyCompile started with basePackage: " + basePackage);
+        ClassScanner scanner = new ClassScanner(rootPath, basePackage);
         try {
             scanner.scanAndHandle();
         } catch (IOException e) {
