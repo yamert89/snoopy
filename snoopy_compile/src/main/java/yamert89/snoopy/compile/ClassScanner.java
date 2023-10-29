@@ -1,10 +1,8 @@
 package yamert89.snoopy.compile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,15 +10,16 @@ public class ClassScanner {
     private final String basePath;
     private final String rootPath;
     private final Set<String> classFiles = new HashSet<>();
-    public ClassScanner(String basePath) {
+    public ClassScanner(String rootPath, String basePath) {
         this.basePath = basePath;
-        this.rootPath = new File("").getAbsolutePath();
+        this.rootPath = rootPath;
+        System.out.println("Class Scanner root: " + rootPath);
     }
 
     public void scanAndHandle() throws IOException {
         collectClasses();
-        ClassPatcher patcher = new ClassPatcherImpl();
-        classFiles.forEach(patcher::run);
+        ClassResolver resolver = new ClassResolver();
+        classFiles.forEach(resolver::resolve);
     }
 
     private void collectClasses() throws IOException {
@@ -32,18 +31,10 @@ public class ClassScanner {
 
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                String fileName = file.toString().replace("\\", "/");
-                var className =  fileName.substring(fileName.indexOf(basePath))
-                        .replace("/", ".")
-                        .replace(".class", "");
-                try {
-                    Class<?> aClass = Class.forName(className, false, this.getClass().getClassLoader());
-                    if (aClass.isAnnotationPresent(ReplaceSql.class)) classFiles.add(file.toFile().getAbsolutePath());
-                    else if (Arrays.stream(aClass.getDeclaredFields()).anyMatch(field ->
-                            field.isAnnotationPresent(Mapper.class))) classFiles.add(file.toFile().getAbsolutePath());
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
+                System.out.println("basePath: " + basePath);
+                System.out.println(file.toAbsolutePath());
+                if (!file.toFile().getName().endsWith(".class")) return FileVisitResult.CONTINUE;
+                classFiles.add(file.toFile().getAbsolutePath());
                 return FileVisitResult.CONTINUE;
             }
 
@@ -54,6 +45,7 @@ public class ClassScanner {
 
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+                System.out.println("visit " + dir.toAbsolutePath());
                 return FileVisitResult.CONTINUE;
             }
         });

@@ -5,22 +5,19 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
 
-public class ClassPatcherImpl implements ClassPatcher {
+public class InjectSqlExecutor implements ClassExecutor {
     @Override
-    public void run(String classFilePath) {
+    public void run(ClassReader reader, String originalPath) {
         try{
-            var is = new FileInputStream(classFilePath);
-            var reader = new ClassReader(is);
             var writer = new ClassWriter(reader, 0);
             InjectFieldVisitor injectFieldVisitor = new InjectFieldVisitor(Opcodes.ASM9, writer);
             reader.accept(injectFieldVisitor, 0);
             var bytes = writer.toByteArray();
-            var file = new File(classFilePath);
-            is.close();
+            var file = new File(originalPath);
+            //is.close();
             var path = file.toPath();
             Files.delete(path);
             Files.createFile(path);
