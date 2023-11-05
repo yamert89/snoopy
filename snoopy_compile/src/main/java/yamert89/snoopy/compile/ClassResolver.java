@@ -25,8 +25,6 @@ public final class ClassResolver {
     }
 
     private boolean isTarget(ClassReader reader){
-        ResolveClassVisitor resolveClassVisitor = new ResolveClassVisitor(Opcodes.ASM9);
-        reader.accept(resolveClassVisitor, 0);
-        return resolveClassVisitor.isTarget();
+        return new InjectSqlClassAcceptor().accepted(reader);
     }
 }
