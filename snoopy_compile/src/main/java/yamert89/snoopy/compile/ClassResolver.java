@@ -11,17 +11,22 @@ import java.nio.file.Files;
 
 public final class ClassResolver {
     public void resolve(String classFilePath){
-        //todo add annotation scanning
-        try{
-            System.out.println("Resolve: " + classFilePath);
-            var is = new FileInputStream(classFilePath);
-            var reader = new ClassReader(is);
 
-            is.close();
+        try(var is = new FileInputStream(classFilePath);){
+            System.out.println("Resolve: " + classFilePath);
+            var reader = new ClassReader(is);
+            if (isTarget(reader)){
+                InjectSqlExecutor injectSqlExecutor = new InjectSqlExecutor();
+                injectSqlExecutor.run(reader, classFilePath);
+            }
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
 
-
+    private boolean isTarget(ClassReader reader){
+        ResolveClassVisitor resolveClassVisitor = new ResolveClassVisitor(Opcodes.ASM9);
+        reader.accept(resolveClassVisitor, 0);
+        return resolveClassVisitor.isTarget();
     }
 }

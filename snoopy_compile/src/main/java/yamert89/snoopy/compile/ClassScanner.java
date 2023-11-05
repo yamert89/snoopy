@@ -16,10 +16,9 @@ public class ClassScanner {
         System.out.println("Class Scanner root: " + rootPath);
     }
 
-    public void scanAndHandle() throws IOException {
+    public Set<String> scan() throws IOException {
         collectClasses();
-        ClassResolver resolver = new ClassResolver();
-        classFiles.forEach(resolver::resolve);
+        return classFiles;
     }
 
     private void collectClasses() throws IOException {
