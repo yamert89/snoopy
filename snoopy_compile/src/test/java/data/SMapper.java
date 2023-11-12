@@ -1,6 +1,6 @@
 package data;
 
-import yamert89.snoopy.compile.Required;
+import yamert89.snoopy.compile.meta.Required;
 
 public class SMapper {
 

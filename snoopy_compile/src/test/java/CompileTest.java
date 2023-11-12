@@ -11,8 +11,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CompileTest {
     private String dataPath;
@@ -28,15 +27,27 @@ public class CompileTest {
 
         ClassScanner scanner = new ClassScanner(dataPath, "");
         Set<String> scanResult = scanner.scan();
-        String expected = dataPath + "Simple.class";
+        String expected = dataPath + "ReplaceSqlExample.class";
         assertTrue(scanResult.contains(expected));
-        assertEquals(2, scanResult.size());
+        assertEquals(4, scanResult.size());
     }
 
     @Test
-    public void injectSqlClassAcceptorWorks() throws IOException {
-        var is = new FileInputStream(dataPath + "Simple.class");
+    public void injectSqlClassAcceptorFoundReplaceSqlAnnotation() throws IOException {
+        var is = new FileInputStream(dataPath + "ReplaceSqlExample.class");
         assertTrue(new InjectSqlClassAcceptor().accepted(new ClassReader(is)));
+    }
+
+    @Test
+    public void injectSqlClassAcceptorFoundMapperAnnotation() throws IOException {
+        var is = new FileInputStream(dataPath + "MapperExample.class");
+        assertTrue(new InjectSqlClassAcceptor().accepted(new ClassReader(is)));
+    }
+
+    @Test
+    public void injectSqlClassAcceptorNotFoundRegularClass() throws IOException {
+        var is = new FileInputStream(dataPath + "RegularClass.class");
+        assertFalse(new InjectSqlClassAcceptor().accepted(new ClassReader(is)));
     }
 
 

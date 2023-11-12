@@ -1,4 +1,4 @@
-package yamert89.snoopy.compile;
+package yamert89.snoopy.compile.meta;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
