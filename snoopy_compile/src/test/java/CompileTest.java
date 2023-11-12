@@ -7,7 +7,6 @@ import yamert89.snoopy.compile.InjectSqlClassAcceptor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.util.Set;
 
@@ -49,6 +48,5 @@ public class CompileTest {
         var is = new FileInputStream(dataPath + "RegularClass.class");
         assertFalse(new InjectSqlClassAcceptor().accepted(new ClassReader(is)));
     }
-
 
 }
