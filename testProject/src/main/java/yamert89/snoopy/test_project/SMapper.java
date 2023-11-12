@@ -1,6 +1,7 @@
 package yamert89.snoopy.test_project;
 
-import yamert89.snoopy.compile.meta.Required;
+
+import yamert89.snoopy.runtime.meta.Required;
 
 public class SMapper {
 

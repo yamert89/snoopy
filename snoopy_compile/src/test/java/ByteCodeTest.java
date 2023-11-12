@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.*;
 import yamert89.snoopy.compile.InjectFieldVisitor;
+import yamert89.snoopy.compile.meta.Descriptors;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +10,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -75,17 +78,23 @@ public class ByteCodeTest {
     }
 
     @Test
-    public void fieldsInTargetMapperExampleCLConvertedSuccessfully() throws IOException {
-        File targetFile = createTargetFile("MapperExampleCL.class");
+    public void fieldsInTargetReplaceSQLFieldExampleCLConvertedSuccessfully() throws IOException {
+        File targetFile = createTargetFile("ReplaceSQLFieldExampleCL.class");
         var is = new FileInputStream(targetFile);
         var reader = new ClassReader(is);
         reader.accept(new ClassVisitor(Opcodes.ASM9) {
+            private final List<String> fieldNames = new ArrayList<>(1);
             @Override
             public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+                if (fieldNames.contains(name)){
+                    assertEquals(new String(readResource("SQL2.sql"), StandardCharsets.UTF_8), value);
+                }
                return new FieldVisitor(Opcodes.ASM9) {
                    @Override
                    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-                       return super.visitAnnotation(descriptor, visible); //todo
+                       assertEquals(Descriptors.REPLACE_SQL_FIELD, descriptor);
+                       if (Descriptors.REPLACE_SQL_FIELD.equals(descriptor)) fieldNames.add(name);
+                       return super.visitAnnotation(descriptor, visible);
                    }
                };
             }
