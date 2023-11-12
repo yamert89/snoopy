@@ -28,7 +28,7 @@ public class CompileTest {
         Set<String> scanResult = scanner.scan();
         String expected = dataPath + "ReplaceSqlExample.class";
         assertTrue(scanResult.contains(expected));
-        assertEquals(4, scanResult.size());
+        assertEquals(3, scanResult.size());
     }
 
     @Test
@@ -39,7 +39,7 @@ public class CompileTest {
 
     @Test
     public void injectSqlClassAcceptorFoundMapperAnnotation() throws IOException {
-        var is = new FileInputStream(dataPath + "MapperExample.class");
+        var is = new FileInputStream(dataPath + "ReplaceSQLFieldExample.class");
         assertTrue(new InjectSqlClassAcceptor().accepted(new ClassReader(is)));
     }
 

@@ -24,7 +24,7 @@ public class ResolveClassVisitor extends ClassVisitor {
         return new FieldVisitor(Opcodes.ASM9) {
             @Override
             public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-                if (descriptor.equals(Descriptors.MAPPER)) setAsTarget();
+                if (descriptor.equals(Descriptors.REPLACE_SQL_FIELD)) setAsTarget();
                 return super.visitAnnotation(descriptor, visible);
             }
         };

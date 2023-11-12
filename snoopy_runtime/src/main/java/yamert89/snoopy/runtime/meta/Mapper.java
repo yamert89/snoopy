@@ -1,4 +1,4 @@
-package yamert89.snoopy.compile.meta;
+package yamert89.snoopy.runtime.meta;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

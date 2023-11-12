@@ -15,7 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ByteCodeTest {
 
-    private static File createTargetFile(String classFilePath, String targetStringPath) throws IOException {
+    private File createTargetFile(String fileName) throws IOException {
+        var classFilePath = getV0(fileName);
+        var targetStringPath = getV1(fileName);
         var is = new FileInputStream(classFilePath);
         var reader = new ClassReader(is);
         var writer = new ClassWriter(reader, 0);
@@ -57,10 +59,7 @@ public class ByteCodeTest {
 
     @Test
     public void fieldsInTargetReplaceSQLExampleCLConvertedSuccessfully() throws IOException {
-        var fileName = "ReplaceSQLExampleCL.class";
-        var classFilePath = getV0(fileName);
-        var targetStringPath = getV1(fileName);
-        File targetFile = createTargetFile(classFilePath, targetStringPath);
+        File targetFile = createTargetFile("ReplaceSQLExampleCL.class");
         var is = new FileInputStream(targetFile);
         var reader = new ClassReader(is);
         reader.accept(new ClassVisitor(Opcodes.ASM9) {
@@ -70,6 +69,25 @@ public class ByteCodeTest {
                     assertEquals(new String(readResource("SQL1.sql"), StandardCharsets.UTF_8), value);
                 }
                 return super.visitField(access, name, descriptor, signature, value);
+            }
+        }, 0);
+        is.close();
+    }
+
+    @Test
+    public void fieldsInTargetMapperExampleCLConvertedSuccessfully() throws IOException {
+        File targetFile = createTargetFile("MapperExampleCL.class");
+        var is = new FileInputStream(targetFile);
+        var reader = new ClassReader(is);
+        reader.accept(new ClassVisitor(Opcodes.ASM9) {
+            @Override
+            public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+               return new FieldVisitor(Opcodes.ASM9) {
+                   @Override
+                   public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+                       return super.visitAnnotation(descriptor, visible); //todo
+                   }
+               };
             }
         }, 0);
         is.close();
