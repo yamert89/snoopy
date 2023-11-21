@@ -7,18 +7,20 @@ import java.net.URL;
 
 public class InjectFieldVisitor extends ClassVisitor {
     private final ClassVisitor cv;
+    private final ClassMetadata classMetadata;
     private FieldsSet fieldsSet;
 
-    public InjectFieldVisitor(int api, ClassVisitor cv) {
+    public InjectFieldVisitor(int api, ClassVisitor cv, ClassMetadata classMetadata) {
         super(api, cv);
         this.cv = cv;
+        this.classMetadata = classMetadata;
     }
 
     @Override
     public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
         System.out.println("visit field: " + name);
 
-        if (name.startsWith("SQL")) {
+        if (classMetadata.getTargetFieldsPrefix() != null && name.startsWith(classMetadata.getTargetFieldsPrefix())) {
             URL url = this.getClass().getResource("/" + name + ".sql");
             if (url != null ){
                 try {

@@ -1,8 +1,10 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Opcodes;
+import yamert89.snoopy.compile.ClassMetadata;
 import yamert89.snoopy.compile.ClassScanner;
-import yamert89.snoopy.compile.InjectSqlClassAcceptor;
+import yamert89.snoopy.compile.MetadataClassVisitor;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +12,8 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CompileTest {
     private String dataPath;
@@ -28,25 +31,31 @@ public class CompileTest {
         Set<String> scanResult = scanner.scan();
         String expected = dataPath + "ReplaceSQLExample.class";
         assertTrue(scanResult.contains(expected));
-        assertEquals(3, scanResult.size());
+        assertEquals(4, scanResult.size());
     }
 
     @Test
-    public void injectSqlClassAcceptorFoundReplaceSqlAnnotation() throws IOException {
-        var is = new FileInputStream(dataPath + "ReplaceSQLExample.class");
-        assertTrue(new InjectSqlClassAcceptor().accepted(new ClassReader(is)));
+    public void correctMetadataForReplaceSqlAnnotation() throws IOException {
+        testMetadata("ReplaceSQLExample.class", new ClassMetadata(true, "SQL"));
     }
 
     @Test
-    public void injectSqlClassAcceptorFoundMapperAnnotation() throws IOException {
-        var is = new FileInputStream(dataPath + "ReplaceSQLFieldExample.class");
-        assertTrue(new InjectSqlClassAcceptor().accepted(new ClassReader(is)));
+    public void correctMetadataForMapperAnnotation() throws IOException {
+        testMetadata("ReplaceSQLFieldExample.class", new ClassMetadata(true, null));
     }
 
     @Test
     public void injectSqlClassAcceptorNotFoundRegularClass() throws IOException {
-        var is = new FileInputStream(dataPath + "RegularClass.class");
-        assertFalse(new InjectSqlClassAcceptor().accepted(new ClassReader(is)));
+        testMetadata("RegularClass.class", new ClassMetadata(false, null));
+    }
+
+    private void testMetadata(String className, ClassMetadata exceptedMetadata) throws IOException{
+        var is = new FileInputStream(dataPath + className);
+        var reader = new ClassReader(is);
+        MetadataClassVisitor metadataClassVisitor = new MetadataClassVisitor(Opcodes.ASM9);
+        reader.accept(metadataClassVisitor, 0);
+        assertEquals(exceptedMetadata, metadataClassVisitor.getClassMetadata());
+        is.close();
     }
 
 }

@@ -9,11 +9,21 @@ import java.io.FileOutputStream;
 import java.nio.file.Files;
 
 public class InjectSqlExecutor implements ClassExecutor {
+    private final ClassReader reader;
+    private final String originalPath;
+    private final ClassMetadata classMetadata;
+
+    public InjectSqlExecutor(ClassReader reader, String originalPath, ClassMetadata classMetadata) {
+        this.reader = reader;
+        this.originalPath = originalPath;
+        this.classMetadata = classMetadata;
+    }
+
     @Override
-    public void run(ClassReader reader, String originalPath) {
+    public void run() {
         try{
             var writer = new ClassWriter(reader, 0);
-            InjectFieldVisitor injectFieldVisitor = new InjectFieldVisitor(Opcodes.ASM9, writer);
+            InjectFieldVisitor injectFieldVisitor = new InjectFieldVisitor(Opcodes.ASM9, writer, classMetadata);
             reader.accept(injectFieldVisitor, 0);
             var bytes = writer.toByteArray();
             var file = new File(originalPath);

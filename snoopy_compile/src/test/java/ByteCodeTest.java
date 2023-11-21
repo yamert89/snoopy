@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.*;
+import yamert89.snoopy.compile.ClassMetadata;
 import yamert89.snoopy.compile.InjectFieldVisitor;
 import yamert89.snoopy.compile.meta.Descriptors;
 
@@ -18,13 +19,68 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ByteCodeTest {
 
-    private File createTargetFile(String fileName) throws IOException {
+    @Test
+    public void fieldSQL1InTargetReplaceSQLExampleCLConvertedSuccessfully() throws IOException {
+        testClass("ReplaceSQLExampleCL.class", new ClassVisitor(Opcodes.ASM9) {
+            @Override
+            public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+                if (name.equals("SQL1")) {
+                    assertEquals(new String(readResource("SQL1.sql"), StandardCharsets.UTF_8), value);
+                }
+                return super.visitField(access, name, descriptor, signature, value);
+            }
+        }, new ClassMetadata(true, "SQL"));
+    }
+
+    @Test
+    public void fieldSQL2InTargetReplaceSQLFieldExampleCLConvertedSuccessfully() throws IOException {
+        testClass("ReplaceSQLFieldExampleCL.class", new ClassVisitor(Opcodes.ASM9) {
+            private final List<String> fieldNames = new ArrayList<>(1);
+            @Override
+            public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+                if (fieldNames.contains(name)){
+                    assertEquals(new String(readResource("SQL2.sql"), StandardCharsets.UTF_8), value);
+                }
+                return new FieldVisitor(Opcodes.ASM9) {
+                    @Override
+                    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+                        assertEquals(Descriptors.REPLACE_SQL_FIELD, descriptor);
+                        if (Descriptors.REPLACE_SQL_FIELD.equals(descriptor)) fieldNames.add(name);
+                        return super.visitAnnotation(descriptor, visible);
+                    }
+                };
+            }
+        }, new ClassMetadata(true, null));
+    }
+
+    @Test
+    public void fieldInject2InTargetReplaceSQLExample2CLConvertedSuccessfully() throws IOException {
+        testClass("ReplaceSQLExample2CL.class", new ClassVisitor(Opcodes.ASM9) {
+            @Override
+            public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+                if (name.equals("inject2")) {
+                    assertEquals(new String(readResource("inject2.sql"), StandardCharsets.UTF_8), value);
+                }
+                return super.visitField(access, name, descriptor, signature, value);
+            }
+        }, new ClassMetadata(true, "inject2"));
+    }
+
+    private void testClass(String className, ClassVisitor cv, ClassMetadata clMetadata) throws IOException{
+        File targetFile = createTargetFile(className, clMetadata);
+        var is = new FileInputStream(targetFile);
+        var reader = new ClassReader(is);
+        reader.accept(cv, 0);
+        is.close();
+    }
+
+    private File createTargetFile(String fileName, ClassMetadata clMetadata) throws IOException {
         var classFilePath = getV0(fileName);
         var targetStringPath = getV1(fileName);
         var is = new FileInputStream(classFilePath);
         var reader = new ClassReader(is);
         var writer = new ClassWriter(reader, 0);
-        InjectFieldVisitor injectFieldVisitor = new InjectFieldVisitor(Opcodes.ASM9, writer);
+        InjectFieldVisitor injectFieldVisitor = new InjectFieldVisitor(Opcodes.ASM9, writer, clMetadata);
         reader.accept(injectFieldVisitor, 0);
         var bytes = writer.toByteArray();
         var targetFile = new File(targetStringPath);
@@ -50,7 +106,7 @@ public class ByteCodeTest {
         try {
             return Files.readAllBytes(
                     Paths.get(Objects.requireNonNull(
-                            this.getClass().getResource(name))
+                                    this.getClass().getResource(name))
                             .getFile()
                             .substring(1)
                     )
@@ -59,51 +115,6 @@ public class ByteCodeTest {
             throw new RuntimeException(e);
         }
     }
-
-    @Test
-    public void fieldsInTargetReplaceSQLExampleCLConvertedSuccessfully() throws IOException {
-        File targetFile = createTargetFile("ReplaceSQLExampleCL.class");
-        var is = new FileInputStream(targetFile);
-        var reader = new ClassReader(is);
-        reader.accept(new ClassVisitor(Opcodes.ASM9) {
-            @Override
-            public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-                if (name.equals("SQL1")) {
-                    assertEquals(new String(readResource("SQL1.sql"), StandardCharsets.UTF_8), value);
-                }
-                return super.visitField(access, name, descriptor, signature, value);
-            }
-        }, 0);
-        is.close();
-    }
-
-    @Test
-    public void fieldsInTargetReplaceSQLFieldExampleCLConvertedSuccessfully() throws IOException {
-        File targetFile = createTargetFile("ReplaceSQLFieldExampleCL.class");
-        var is = new FileInputStream(targetFile);
-        var reader = new ClassReader(is);
-        reader.accept(new ClassVisitor(Opcodes.ASM9) {
-            private final List<String> fieldNames = new ArrayList<>(1);
-            @Override
-            public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-                if (fieldNames.contains(name)){
-                    assertEquals(new String(readResource("SQL2.sql"), StandardCharsets.UTF_8), value);
-                }
-               return new FieldVisitor(Opcodes.ASM9) {
-                   @Override
-                   public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-                       assertEquals(Descriptors.REPLACE_SQL_FIELD, descriptor);
-                       if (Descriptors.REPLACE_SQL_FIELD.equals(descriptor)) fieldNames.add(name);
-                       return super.visitAnnotation(descriptor, visible);
-                   }
-               };
-            }
-        }, 0);
-        is.close();
-    }
-
-
-
 
 
 
