@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.*;
 import yamert89.snoopy.compile.ClassMetadata;
-import yamert89.snoopy.compile.InjectFieldVisitor;
+import yamert89.snoopy.compile.visitors.InjectFieldVisitor;
 import yamert89.snoopy.compile.meta.Descriptors;
 
 import java.io.File;

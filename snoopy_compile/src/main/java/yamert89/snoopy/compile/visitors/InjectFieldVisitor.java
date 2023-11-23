@@ -1,8 +1,15 @@
-package yamert89.snoopy.compile;
+package yamert89.snoopy.compile.visitors;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.TypePath;
+import yamert89.snoopy.compile.ClassMetadata;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 
 public class InjectFieldVisitor extends ClassVisitor {

@@ -1,14 +1,12 @@
-package yamert89.snoopy.compile;
+package yamert89.snoopy.compile.visitors;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
+import yamert89.snoopy.compile.ClassMetadata;
 import yamert89.snoopy.compile.meta.Descriptors;
-import yamert89.snoopy.compile.visitors.ReadReplaceSqlAnnotationVisitor;
 
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 public class MetadataClassVisitor extends ClassVisitor {

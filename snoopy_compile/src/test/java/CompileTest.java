@@ -4,7 +4,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import yamert89.snoopy.compile.ClassMetadata;
 import yamert89.snoopy.compile.ClassScanner;
-import yamert89.snoopy.compile.MetadataClassVisitor;
+import yamert89.snoopy.compile.visitors.MetadataClassVisitor;
 
 import java.io.File;
 import java.io.FileInputStream;

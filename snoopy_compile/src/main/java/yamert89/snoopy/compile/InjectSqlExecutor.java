@@ -3,6 +3,7 @@ package yamert89.snoopy.compile;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
+import yamert89.snoopy.compile.visitors.InjectFieldVisitor;
 
 import java.io.File;
 import java.io.FileOutputStream;

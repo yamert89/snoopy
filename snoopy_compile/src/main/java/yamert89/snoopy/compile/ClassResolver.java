@@ -2,6 +2,7 @@ package yamert89.snoopy.compile;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
+import yamert89.snoopy.compile.visitors.MetadataClassVisitor;
 
 import java.io.FileInputStream;
 
