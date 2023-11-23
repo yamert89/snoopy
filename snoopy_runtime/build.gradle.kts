@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "yamert89.snoopy"
-version = "unspecified"
+version = "0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
