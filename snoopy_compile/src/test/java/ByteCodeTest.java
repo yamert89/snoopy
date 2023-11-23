@@ -1,8 +1,8 @@
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.*;
 import yamert89.snoopy.compile.ClassMetadata;
-import yamert89.snoopy.compile.visitors.InjectFieldVisitor;
 import yamert89.snoopy.compile.meta.Descriptors;
+import yamert89.snoopy.compile.visitors.TargetClassVisitor;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -80,8 +80,8 @@ public class ByteCodeTest {
         var is = new FileInputStream(classFilePath);
         var reader = new ClassReader(is);
         var writer = new ClassWriter(reader, 0);
-        InjectFieldVisitor injectFieldVisitor = new InjectFieldVisitor(Opcodes.ASM9, writer, clMetadata);
-        reader.accept(injectFieldVisitor, 0);
+        TargetClassVisitor targetClassVisitor = new TargetClassVisitor(Opcodes.ASM9, writer, clMetadata);
+        reader.accept(targetClassVisitor, 0);
         var bytes = writer.toByteArray();
         var targetFile = new File(targetStringPath);
         is.close();

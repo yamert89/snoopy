@@ -10,7 +10,6 @@ public class ReplaceSQLAnnotationVisitor extends AnnotationVisitor {
 
     @Override
     public void visit(String name, Object value) {
-        System.out.println("visit replaceSqlAnnotationVisitor: name=" + name + ", value=" + value);
         super.visit(name, value);
     }
 }

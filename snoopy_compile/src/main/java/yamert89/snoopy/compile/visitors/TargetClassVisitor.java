@@ -4,6 +4,8 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.TypePath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.ClassMetadata;
 
 import java.io.BufferedReader;
@@ -12,12 +14,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class InjectFieldVisitor extends ClassVisitor {
+public class TargetClassVisitor extends ClassVisitor {
     private final ClassVisitor cv;
     private final ClassMetadata classMetadata;
     private FieldsSet fieldsSet;
+    private final Logger log = LoggerFactory.getLogger(TargetClassVisitor.class);
 
-    public InjectFieldVisitor(int api, ClassVisitor cv, ClassMetadata classMetadata) {
+    public TargetClassVisitor(int api, ClassVisitor cv, ClassMetadata classMetadata) {
         super(api, cv);
         this.cv = cv;
         this.classMetadata = classMetadata;
@@ -25,7 +28,7 @@ public class InjectFieldVisitor extends ClassVisitor {
 
     @Override
     public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-        System.out.println("visit field: " + name);
+        log.debug("started analyzing field: {{}}", name);
 
         if (classMetadata.getTargetFieldsPrefix() != null && name.startsWith(classMetadata.getTargetFieldsPrefix())) {
             URL url = this.getClass().getResource("/" + name + ".sql");
@@ -36,10 +39,11 @@ public class InjectFieldVisitor extends ClassVisitor {
                     while (reader.ready()) {
                         strBuilder.append(reader.readLine());
                     }
-                    String fieldValue = strBuilder.toString();
-                    System.out.println("new value of field " + name + " = " + fieldValue);
-                    return new SQLFiledVisitor(cv.visitField(access, name, descriptor, signature, fieldValue));
+                    String newValue = strBuilder.toString();
+                    log.debug("Field's value \"{}\" was replaced with \"{}\"", value, newValue);
+                    return new SQLFieldVisitor(cv.visitField(access, name, descriptor, signature, newValue));
                 } catch (IOException e) {
+                    log.error(e.getMessage(), e);
                     throw new RuntimeException(e);
                 }
             }
@@ -50,25 +54,22 @@ public class InjectFieldVisitor extends ClassVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-        System.out.println("visit annotation: " + descriptor);
+        log.debug("started analyzing class annotation: {{}}", descriptor);
         return new ReplaceSQLAnnotationVisitor();
     }
 
     @Override
     public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String descriptor, boolean visible) {
-        System.out.printf("visit type annotation %n, %s, %s" + typeRef, typePath, descriptor);
         return super.visitTypeAnnotation(typeRef, typePath, descriptor, visible);
     }
 
     @Override
     public void visitSource(String source, String debug) {
-        System.out.println("visit source " + source);
         super.visitSource(source, debug);
     }
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        System.out.println("visit: " + name);
         cv.visit(version, access, name, signature, superName, interfaces);
     }
 }

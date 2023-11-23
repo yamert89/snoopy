@@ -1,5 +1,8 @@
 package yamert89.snoopy.compile;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -10,13 +13,14 @@ public class ClassScanner {
     private final String basePath;
     private final String rootPath;
     private final Set<String> classFiles = new HashSet<>();
+    private final Logger log = LoggerFactory.getLogger(ClassScanner.class);
     public ClassScanner(String rootPath, String basePath) {
         this.basePath = basePath;
         this.rootPath = rootPath;
-        System.out.println("Class Scanner root: " + rootPath);
     }
 
     public Set<String> scan() throws IOException {
+        log.debug("scan in root: {}", rootPath);
         collectClasses();
         return classFiles;
     }
@@ -30,10 +34,10 @@ public class ClassScanner {
 
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                System.out.println("basePath: " + basePath);
-                System.out.println(file.toAbsolutePath());
                 if (!file.toFile().getName().endsWith(".class")) return FileVisitResult.CONTINUE;
-                classFiles.add(file.toFile().getAbsolutePath());
+                String path = file.toFile().getAbsolutePath();
+                classFiles.add(path);
+                log.debug("found class: {}", path);
                 return FileVisitResult.CONTINUE;
             }
 
@@ -44,7 +48,6 @@ public class ClassScanner {
 
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
-                System.out.println("visit " + dir.toAbsolutePath());
                 return FileVisitResult.CONTINUE;
             }
         });

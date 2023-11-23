@@ -3,7 +3,9 @@ package yamert89.snoopy.compile;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
-import yamert89.snoopy.compile.visitors.InjectFieldVisitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import yamert89.snoopy.compile.visitors.TargetClassVisitor;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,6 +15,7 @@ public class InjectSqlExecutor implements ClassExecutor {
     private final ClassReader reader;
     private final String originalPath;
     private final ClassMetadata classMetadata;
+    private final Logger log = LoggerFactory.getLogger(InjectSqlExecutor.class);
 
     public InjectSqlExecutor(ClassReader reader, String originalPath, ClassMetadata classMetadata) {
         this.reader = reader;
@@ -23,9 +26,10 @@ public class InjectSqlExecutor implements ClassExecutor {
     @Override
     public void run() {
         try{
+            log.debug("execute path: {}", originalPath);
             var writer = new ClassWriter(reader, 0);
-            InjectFieldVisitor injectFieldVisitor = new InjectFieldVisitor(Opcodes.ASM9, writer, classMetadata);
-            reader.accept(injectFieldVisitor, 0);
+            TargetClassVisitor targetClassVisitor = new TargetClassVisitor(Opcodes.ASM9, writer, classMetadata);
+            reader.accept(targetClassVisitor, 0);
             var bytes = writer.toByteArray();
             var file = new File(originalPath);
             //is.close();
@@ -35,8 +39,9 @@ public class InjectSqlExecutor implements ClassExecutor {
             var out = new FileOutputStream(file);
             out.write(bytes);
             out.close();
+            log.debug("saved file {}", path);
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 }
