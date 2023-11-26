@@ -4,5 +4,6 @@ import org.gradle.api.provider.Property;
 
 public interface SnoopyPluginExtension {
     Property<String> getBasePackage();
-    Property<String> getRootPath();
+    Property<String> getClassDir();
+    Property<String> getResourcesDir();
 }
