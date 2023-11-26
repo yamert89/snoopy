@@ -24,4 +24,7 @@ tasks{
     test {
         useJUnitPlatform()
     }
+    snoopyCompile {
+        dependsOn(classes)
+    }
 }
