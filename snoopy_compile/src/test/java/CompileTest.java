@@ -27,7 +27,7 @@ public class CompileTest {
     @Test
     public void classScannerWorks() throws IOException {
 
-        ClassScanner scanner = new ClassScanner(dataPath, "");
+        ClassScanner scanner = new ClassScanner(dataPath);
         Set<String> scanResult = scanner.scan();
         String expected = dataPath + "ReplaceSQLExample.class";
         assertTrue(scanResult.contains(expected));

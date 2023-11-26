@@ -5,9 +5,10 @@ import java.util.Set;
 
 public class DefaultClassModifier implements ClassModifier {
     @Override
-    public void modify(String rootPath, String basePath) {
+    public void modify(String classDir, String resourcesDir) {
         try {
-            Set<String> classes = new ClassScanner(rootPath, basePath).scan();
+            ResourcesUtil.getInstance(resourcesDir);
+            Set<String> classes = new ClassScanner(classDir).scan();
             classes.forEach(new ClassResolver()::resolve);
         } catch (IOException e) {
             throw new RuntimeException(e);

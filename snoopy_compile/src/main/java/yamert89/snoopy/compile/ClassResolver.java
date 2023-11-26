@@ -13,6 +13,7 @@ public final class ClassResolver {
     public void resolve(String classFilePath){
         try(var is = new FileInputStream(classFilePath);){
             var reader = new ClassReader(is);
+            is.close();
             ClassMetadata clMetadata = getMetadata(reader);
             log.debug("resolved class metadata: {}", clMetadata);
             if (clMetadata.isTarget()){

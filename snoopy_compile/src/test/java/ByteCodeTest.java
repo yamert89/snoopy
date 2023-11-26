@@ -1,6 +1,8 @@
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.*;
 import yamert89.snoopy.compile.ClassMetadata;
+import yamert89.snoopy.compile.ResourcesUtil;
 import yamert89.snoopy.compile.meta.Descriptors;
 import yamert89.snoopy.compile.visitors.TargetClassVisitor;
 
@@ -18,6 +20,11 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ByteCodeTest {
+
+    @BeforeAll
+    public static void init(){
+        ResourcesUtil.getInstance(new File("").getAbsolutePath() + "/build/resources/test");
+    }
 
     @Test
     public void fieldSQL1InTargetReplaceSQLExampleCLConvertedSuccessfully() throws IOException {
@@ -63,7 +70,7 @@ public class ByteCodeTest {
                 }
                 return super.visitField(access, name, descriptor, signature, value);
             }
-        }, new ClassMetadata(true, "inject2"));
+        }, new ClassMetadata(true, "inject"));
     }
 
     private void testClass(String className, ClassVisitor cv, ClassMetadata clMetadata) throws IOException{

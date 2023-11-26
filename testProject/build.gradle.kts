@@ -11,7 +11,6 @@ repositories {
 }
 snoopy{
     basePackage = "yamert89/snoopy/test_project"
-    rootPath = layout.buildDirectory.get().asFile.path + "/classes/java/main"
 }
 
 dependencies {

@@ -7,12 +7,12 @@ import org.objectweb.asm.TypePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.ClassMetadata;
+import yamert89.snoopy.compile.ResourcesUtil;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
+
+
 
 public class TargetClassVisitor extends ClassVisitor {
     private final ClassVisitor cv;
@@ -31,10 +31,10 @@ public class TargetClassVisitor extends ClassVisitor {
         log.debug("started analyzing field: {{}}", name);
 
         if (classMetadata.getTargetFieldsPrefix() != null && name.startsWith(classMetadata.getTargetFieldsPrefix())) {
-            URL url = this.getClass().getResource("/" + name + ".sql");
-            if (url != null ){
+            File resource = ResourcesUtil.getByName("/" + name + ".sql");
+            if (resource != null ){
                 try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(url.getFile())));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(resource)));
                     StringBuilder strBuilder = new StringBuilder();
                     while (reader.ready()) {
                         strBuilder.append(reader.readLine());

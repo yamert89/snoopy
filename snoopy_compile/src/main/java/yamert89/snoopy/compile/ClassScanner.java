@@ -10,23 +10,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ClassScanner {
-    private final String basePath;
-    private final String rootPath;
+    private final String classDir;
     private final Set<String> classFiles = new HashSet<>();
     private final Logger log = LoggerFactory.getLogger(ClassScanner.class);
-    public ClassScanner(String rootPath, String basePath) {
-        this.basePath = basePath;
-        this.rootPath = rootPath;
+    public ClassScanner(String classDir) {
+        this.classDir = classDir;
     }
 
     public Set<String> scan() throws IOException {
-        log.debug("scan in root: {}", rootPath);
+        log.debug("scan in root: {}", classDir);
         collectClasses();
         return classFiles;
     }
 
     private void collectClasses() throws IOException {
-        Files.walkFileTree(Paths.get(rootPath + "/" + basePath), new FileVisitor<Path>() {
+        Files.walkFileTree(Paths.get(classDir), new FileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                 return FileVisitResult.CONTINUE;
