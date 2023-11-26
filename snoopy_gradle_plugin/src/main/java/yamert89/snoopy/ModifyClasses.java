@@ -16,8 +16,8 @@ public class ModifyClasses extends DefaultTask {
         Project project = getProject();
         SnoopyPluginExtension extension = project.getExtensions().findByType(SnoopyPluginExtension.class);
         String basePackage = extension.getBasePackage().getOrElse("");
-        String classDir = extension.getClassDir().getOrElse("/classes/java/main");
-        String resourcesDir = extension.getResourcesDir().getOrElse("/resources/main");
+        String classDir = extension.getClassDir().getOrElse("classes/java/main");
+        String resourcesDir = extension.getResourcesDir().getOrElse("resources/main");
         String baseDir = project.getLayout().getBuildDirectory().getAsFile().get().getPath();
         System.out.println("Task snoopyCompile started with basePackage: " + basePackage);
         ClassModifier classModifier = new DefaultClassModifier();
