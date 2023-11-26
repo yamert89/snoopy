@@ -9,16 +9,30 @@ import yamert89.snoopy.compile.visitors.MetadataClassVisitor;
 import java.io.FileInputStream;
 
 public final class ClassResolver {
+    private final ClassExecutorFactory classExecutorFactory;
+    private final String classFilePath;
     private final Logger log = LoggerFactory.getLogger(ClassResolver.class);
-    public void resolve(String classFilePath){
-        try(var is = new FileInputStream(classFilePath);){
+
+    public ClassResolver(String classFilePath, ClassExecutorFactory classExecutorFactory) {
+        this.classExecutorFactory = classExecutorFactory;
+        this.classFilePath = classFilePath;
+    }
+
+    public ClassResolver(String classFilePath) {
+        this.classFilePath = classFilePath;
+        classExecutorFactory = new InjectSqlClassExecutorFactory();
+    }
+
+    public void resolve(){
+        try{
+            var is = new FileInputStream(classFilePath);
             var reader = new ClassReader(is);
             is.close();
             ClassMetadata clMetadata = getMetadata(reader);
             log.debug("resolved class metadata: {}", clMetadata);
             if (clMetadata.isTarget()){
-                InjectSqlExecutor injectSqlExecutor = new InjectSqlExecutor(reader, classFilePath, clMetadata);
-                injectSqlExecutor.run();
+                ClassExecutor classExecutor = classExecutorFactory.build(reader, classFilePath, clMetadata);
+                classExecutor.run();
             }
         } catch (Exception e){
             e.printStackTrace();

@@ -9,7 +9,7 @@ public class DefaultClassModifier implements ClassModifier {
         try {
             ResourcesUtil.getInstance(resourcesDir);
             Set<String> classes = new ClassScanner(classDir).scan();
-            classes.forEach(new ClassResolver()::resolve);
+            classes.forEach((file) -> new ClassResolver(file, new CopyTargetsClassExecutorFactory()).resolve());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

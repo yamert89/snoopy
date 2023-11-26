@@ -41,7 +41,7 @@ public class TargetClassVisitor extends ClassVisitor {
                     }
                     String newValue = strBuilder.toString();
                     log.debug("Field's value \"{}\" was replaced with \"{}\"", value, newValue);
-                    return new SQLFieldVisitor(cv.visitField(access, name, descriptor, signature, newValue));
+                    return super.visitField(access, name, descriptor, signature, newValue);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                     throw new RuntimeException(e);
