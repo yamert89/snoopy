@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.ClassMetadata;
 import yamert89.snoopy.compile.ResourcesUtil;
+import yamert89.snoopy.compile.meta.Descriptors;
 
 import java.io.*;
 import java.net.URL;
@@ -55,7 +56,7 @@ public class TargetClassVisitor extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
-        if (name.equals("<init>")) return new InitMethodVisitor(replacementFields, Opcodes.ASM9, mv);
+        if (name.equals(Descriptors.INIT)) return new InitMethodVisitor(replacementFields, Opcodes.ASM9, mv);
         return mv;
     }
 
