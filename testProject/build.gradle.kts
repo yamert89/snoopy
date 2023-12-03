@@ -16,8 +16,8 @@ snoopy{
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation(project(":snoopy_compile"))
-    implementation(project(":snoopy_runtime"))
+    implementation(project(":compile"))
+    implementation(project(":runtime"))
 }
 
 tasks{
@@ -25,6 +25,11 @@ tasks{
         useJUnitPlatform()
     }
     snoopyCompile {
-        dependsOn(classes)
+        mustRunAfter(classes)
+        doFirst { println("snoopy started...") }
     }
+    jar {
+        dependsOn(snoopyCompile)
+    }
+
 }

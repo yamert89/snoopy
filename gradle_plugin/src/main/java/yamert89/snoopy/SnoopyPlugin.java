@@ -1,10 +1,11 @@
 package yamert89.snoopy;
 
-import org.gradle.api.*;
-import org.gradle.api.provider.Property;
-import org.jetbrains.annotations.NotNull;
+import org.gradle.api.NonNullApi;
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
+import org.jetbrains.annotations.NotNull;
 
 @NonNullApi
 abstract public class SnoopyPlugin implements Plugin<Project> {

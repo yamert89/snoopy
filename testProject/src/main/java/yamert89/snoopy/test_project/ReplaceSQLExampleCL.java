@@ -5,7 +5,8 @@ import yamert89.snoopy.compile.meta.ReplaceSQL;
 @ReplaceSQL(fieldsStartWith = "SQL")
 public class ReplaceSQLExampleCL {
 
-    public static final String SQL1 = "sql1";
-    public static final String SQL2 = "sql2";
-    public static final String regularField = "regularField";
+    public final String SQL1 = "sql1";
+    public String SQL2 = "sql2";
+    private String SQL3;
+    public final String regularField = "regularField";
 }
