@@ -1,6 +1,6 @@
 package data;
 
-import yamert89.snoopy.compile.meta.ReplaceSQL;
+import yamert89.snoopy.meta.ReplaceSQL;
 
 @ReplaceSQL(fieldsStartWith = "SQL")
 public class ReplaceSQLExample {

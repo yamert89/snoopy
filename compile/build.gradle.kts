@@ -14,12 +14,14 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("ch.qos.logback:logback-classic:1.4.11")
+    implementation(project(":meta"))
     implementation("org.ow2.asm:asm-util:9.5")
     implementation("org.ow2.asm:asm-tree:9.5")
     implementation("org.ow2.asm:asm-analysis:9.5")
     implementation("org.ow2.asm:asm-commons:9.5")
     implementation("org.slf4j:slf4j-api:2.0.9")
-    testImplementation("ch.qos.logback:logback-classic:1.4.11")
+
 }
 
 tasks.test {

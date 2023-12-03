@@ -18,6 +18,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation(project(":compile"))
     implementation(project(":runtime"))
+    implementation(project(":meta"))
 }
 
 tasks{

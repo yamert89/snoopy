@@ -16,4 +16,4 @@ pluginManagement {
 dependencyResolutionManagement {
     repositories.mavenCentral()
 }
-
+include("meta")

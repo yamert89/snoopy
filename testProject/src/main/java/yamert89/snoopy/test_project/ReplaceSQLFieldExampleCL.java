@@ -1,6 +1,6 @@
 package yamert89.snoopy.test_project;
 
-import yamert89.snoopy.compile.meta.ReplaceSQLField;
+import yamert89.snoopy.meta.ReplaceSQLField;
 
 public class ReplaceSQLFieldExampleCL {
 
