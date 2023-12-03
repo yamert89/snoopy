@@ -1,9 +1,6 @@
 package yamert89.snoopy.compile.visitors;
 
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.TypePath;
+import org.objectweb.asm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.ClassMetadata;
@@ -11,13 +8,15 @@ import yamert89.snoopy.compile.ResourcesUtil;
 
 import java.io.*;
 import java.net.URL;
-
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class TargetClassVisitor extends ClassVisitor {
     private final ClassVisitor cv;
     private final ClassMetadata classMetadata;
     private FieldsSet fieldsSet;
+    private final Map<String, String> replacementFields = new HashMap<>();
     private final Logger log = LoggerFactory.getLogger(TargetClassVisitor.class);
 
     public TargetClassVisitor(int api, ClassVisitor cv, ClassMetadata classMetadata) {
@@ -40,8 +39,9 @@ public class TargetClassVisitor extends ClassVisitor {
                         strBuilder.append(reader.readLine());
                     }
                     String newValue = strBuilder.toString();
-                    log.debug("Field's value \"{}\" was replaced with \"{}\"", value, newValue);
-                    return super.visitField(access, name, descriptor, signature, newValue);
+                    log.debug("Field's value \"{}\" will be replace with \"{}\"", value, newValue);
+                    replacementFields.put(name, newValue);
+                    return super.visitField(access, name, descriptor, signature, value);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                     throw new RuntimeException(e);
@@ -50,6 +50,13 @@ public class TargetClassVisitor extends ClassVisitor {
             return super.visitField(access, name, descriptor, signature, value);
 
         }else return super.visitField(access, name, descriptor, signature, value);
+    }
+
+    @Override
+    public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+        MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
+        if (name.equals("<init>")) return new InitMethodVisitor(replacementFields, Opcodes.ASM9, mv);
+        return mv;
     }
 
     @Override

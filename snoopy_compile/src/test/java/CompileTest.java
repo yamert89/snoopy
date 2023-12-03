@@ -45,7 +45,7 @@ public class CompileTest {
     }
 
     @Test
-    public void injectSqlClassAcceptorNotFoundRegularClass() throws IOException {
+    public void correctMetadataForRegularClass() throws IOException {
         testMetadata("RegularClass.class", new ClassMetadata(false, null));
     }
 
