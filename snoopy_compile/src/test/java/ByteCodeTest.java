@@ -1,3 +1,5 @@
+import fakes.ConstructorFieldsAssignedAdapter;
+import fakes.ConstructorFieldsAssignedAdapter2;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.*;
@@ -27,50 +29,39 @@ public class ByteCodeTest {
     }
 
     @Test
-    public void fieldSQL1InTargetReplaceSQLExampleCLConvertedSuccessfully() throws IOException {
-        testClass("ReplaceSQLExampleCL.class", new ClassVisitor(Opcodes.ASM9) {
-            @Override
-            public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-                if (name.equals("SQL1")) {
-                    assertEquals(new String(readResource("SQL1.sql"), StandardCharsets.UTF_8), value);
-                }
-                return super.visitField(access, name, descriptor, signature, value);
-            }
-        }, new ClassMetadata(true, "SQL"));
+    public void finalFieldInjectedSuccessfully() throws IOException {
+        testClass(
+                "ReplaceSQLExampleCL.class",
+                new ConstructorFieldsAssignedAdapter(Opcodes.ASM9, "SQL1", new String(readResource("SQL1.sql"), StandardCharsets.UTF_8)),
+                new ClassMetadata(true, "SQL")
+        );
     }
 
     @Test
-    public void fieldSQL2InTargetReplaceSQLFieldExampleCLConvertedSuccessfully() throws IOException {
-        testClass("ReplaceSQLFieldExampleCL.class", new ClassVisitor(Opcodes.ASM9) {
-            private final List<String> fieldNames = new ArrayList<>(1);
-            @Override
-            public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-                if (fieldNames.contains(name)){
-                    assertEquals(new String(readResource("SQL2.sql"), StandardCharsets.UTF_8), value);
-                }
-                return new FieldVisitor(Opcodes.ASM9) {
-                    @Override
-                    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-                        assertEquals(Descriptors.REPLACE_SQL_FIELD, descriptor);
-                        if (Descriptors.REPLACE_SQL_FIELD.equals(descriptor)) fieldNames.add(name);
-                        return super.visitAnnotation(descriptor, visible);
-                    }
-                };
-            }
-        }, new ClassMetadata(true, null));
+    public void notFinalFieldInjectedSuccessfully() throws IOException {
+        testClass(
+                "ReplaceSQLExampleCL.class",
+                new ConstructorFieldsAssignedAdapter(Opcodes.ASM9, "SQL2", new String(readResource("SQL2.sql"), StandardCharsets.UTF_8)),
+                new ClassMetadata(true, "SQL")
+        );
     }
 
     @Test
-    public void fieldInject2InTargetReplaceSQLExample2CLConvertedSuccessfully() throws IOException {
-        testClass("ReplaceSQLExample2CL.class", new ClassVisitor(Opcodes.ASM9) {
-            @Override
-            public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-                if (name.equals("inject2")) {
-                    assertEquals(new String(readResource("inject2.sql"), StandardCharsets.UTF_8), value);
-                }
-                return super.visitField(access, name, descriptor, signature, value);
-            }
-        }, new ClassMetadata(true, "inject"));
+    public void privateNotFinalFieldInjectedSuccessfully() throws IOException {
+        testClass(
+                "ReplaceSQLExampleCL.class",
+                new ConstructorFieldsAssignedAdapter(Opcodes.ASM9, "SQL3", new String(readResource("SQL3.sql"), StandardCharsets.UTF_8)),
+                new ClassMetadata(true, "SQL")
+        );
+    }
+
+    @Test
+    public void fieldMarkedByReplaceSqlFieldInjectedSuccessfully() throws IOException {
+        testClass(
+                "ReplaceSQLFieldExampleCL.class",
+                new ConstructorFieldsAssignedAdapter2(Opcodes.ASM9, new String(readResource("SQL2.sql"), StandardCharsets.UTF_8)),
+                new ClassMetadata(true, null)
+        );
     }
 
     private void testClass(String className, ClassVisitor cv, ClassMetadata clMetadata) throws IOException{
