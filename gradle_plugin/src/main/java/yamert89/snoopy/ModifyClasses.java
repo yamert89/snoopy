@@ -4,10 +4,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
 import yamert89.snoopy.compile.ClassModifier;
-import yamert89.snoopy.compile.ClassScanner;
 import yamert89.snoopy.compile.DefaultClassModifier;
-
-import java.io.IOException;
 
 public class ModifyClasses extends DefaultTask {
 
