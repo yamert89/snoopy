@@ -6,7 +6,6 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
 import yamert89.snoopy.compile.meta.Descriptors;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 

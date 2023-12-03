@@ -1,6 +1,9 @@
-package yamert89.snoopy.compile.visitors;
+package yamert89.snoopy.compile.adapters;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.ClassMetadata;
@@ -8,21 +11,17 @@ import yamert89.snoopy.compile.ResourcesUtil;
 import yamert89.snoopy.compile.meta.Descriptors;
 
 import java.io.*;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class TargetClassVisitor extends ClassVisitor {
-    private final ClassVisitor cv;
+public class TargetClassAdapter extends ClassVisitor {
     private final ClassMetadata classMetadata;
-    private FieldsSet fieldsSet;
     private final Map<String, String> replacementFields = new HashMap<>();
-    private final Logger log = LoggerFactory.getLogger(TargetClassVisitor.class);
+    private final Logger log = LoggerFactory.getLogger(TargetClassAdapter.class);
 
-    public TargetClassVisitor(int api, ClassVisitor cv, ClassMetadata classMetadata) {
+    public TargetClassAdapter(int api, ClassVisitor cv, ClassMetadata classMetadata) {
         super(api, cv);
-        this.cv = cv;
         this.classMetadata = classMetadata;
     }
 
@@ -48,42 +47,16 @@ public class TargetClassVisitor extends ClassVisitor {
                     throw new RuntimeException(e);
                 }
             }
-            return super.visitField(access, name, descriptor, signature, value);
-
-        }else return super.visitField(access, name, descriptor, signature, value);
+        }
+        return super.visitField(access, name, descriptor, signature, value);
     }
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
-        if (name.equals(Descriptors.INIT)) return new InitMethodVisitor(replacementFields, Opcodes.ASM9, mv);
+        if (name.equals(Descriptors.INIT))
+            return new InitMethodFieldsAssignAdapter(replacementFields, Opcodes.ASM9, mv);
         return mv;
     }
 
-    @Override
-    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-        log.debug("started analyzing class annotation: {{}}", descriptor);
-        return new ReplaceSQLAnnotationVisitor();
-    }
-
-    @Override
-    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String descriptor, boolean visible) {
-        return super.visitTypeAnnotation(typeRef, typePath, descriptor, visible);
-    }
-
-    @Override
-    public void visitSource(String source, String debug) {
-        super.visitSource(source, debug);
-    }
-
-    @Override
-    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        cv.visit(version, access, name, signature, superName, interfaces);
-    }
-}
-
-enum FieldsSet {
-    ALL,
-    PREFIX,
-    MAPPER
 }

@@ -4,7 +4,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import yamert89.snoopy.compile.visitors.MetadataClassVisitor;
+import yamert89.snoopy.compile.adapters.ClassMetadataAdapter;
 
 import java.io.FileInputStream;
 
@@ -35,15 +35,14 @@ public final class ClassResolver {
                 classExecutor.run();
             }
         } catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
     private ClassMetadata getMetadata(ClassReader reader){
-        MetadataClassVisitor metadataClassVisitor = new MetadataClassVisitor(Opcodes.ASM9);
-        reader.accept(metadataClassVisitor, 0);
-        return metadataClassVisitor.getClassMetadata();
+        ClassMetadataAdapter classMetadataAdapter = new ClassMetadataAdapter(Opcodes.ASM9);
+        reader.accept(classMetadataAdapter, 0);
+        return classMetadataAdapter.getClassMetadata();
     }
-
 
 }

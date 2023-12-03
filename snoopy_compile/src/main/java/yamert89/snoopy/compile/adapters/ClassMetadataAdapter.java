@@ -1,4 +1,4 @@
-package yamert89.snoopy.compile.visitors;
+package yamert89.snoopy.compile.adapters;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
@@ -9,12 +9,12 @@ import yamert89.snoopy.compile.meta.Descriptors;
 
 import java.util.function.Supplier;
 
-public class MetadataClassVisitor extends ClassVisitor {
+public class ClassMetadataAdapter extends ClassVisitor {
     private boolean isTarget = false;
 
-    private final ReadReplaceSqlAnnotationVisitor annotationVisitor = new ReadReplaceSqlAnnotationVisitor(Opcodes.ASM9);
+    private final ReadReplaceSqlAnnotationAdapter annotationVisitor = new ReadReplaceSqlAnnotationAdapter(Opcodes.ASM9);
 
-    public MetadataClassVisitor(int api) {
+    public ClassMetadataAdapter(int api) {
         super(api);
     }
 

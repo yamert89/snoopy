@@ -1,4 +1,4 @@
-package yamert89.snoopy.compile.visitors;
+package yamert89.snoopy.compile.adapters;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -6,10 +6,10 @@ import yamert89.snoopy.compile.meta.Descriptors;
 
 import java.util.Map;
 
-public class InitMethodVisitor extends MethodVisitor {
+public class InitMethodFieldsAssignAdapter extends MethodVisitor {
     private final Map<String, String> replacementFields;
     private String cachedString;
-    protected InitMethodVisitor(Map<String, String> replacementFields, int api, MethodVisitor methodVisitor) {
+    protected InitMethodFieldsAssignAdapter(Map<String, String> replacementFields, int api, MethodVisitor methodVisitor) {
         super(api, methodVisitor);
         this.replacementFields = replacementFields;
     }

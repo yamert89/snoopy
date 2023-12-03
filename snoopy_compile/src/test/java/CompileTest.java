@@ -4,7 +4,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import yamert89.snoopy.compile.ClassMetadata;
 import yamert89.snoopy.compile.ClassScanner;
-import yamert89.snoopy.compile.visitors.MetadataClassVisitor;
+import yamert89.snoopy.compile.adapters.ClassMetadataAdapter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,9 +52,9 @@ public class CompileTest {
     private void testMetadata(String className, ClassMetadata exceptedMetadata) throws IOException{
         var is = new FileInputStream(dataPath + className);
         var reader = new ClassReader(is);
-        MetadataClassVisitor metadataClassVisitor = new MetadataClassVisitor(Opcodes.ASM9);
-        reader.accept(metadataClassVisitor, 0);
-        assertEquals(exceptedMetadata, metadataClassVisitor.getClassMetadata());
+        ClassMetadataAdapter classMetadataAdapter = new ClassMetadataAdapter(Opcodes.ASM9);
+        reader.accept(classMetadataAdapter, 0);
+        assertEquals(exceptedMetadata, classMetadataAdapter.getClassMetadata());
         is.close();
     }
 

@@ -24,7 +24,7 @@ public class ClassScanner {
     }
 
     private void collectClasses() throws IOException {
-        Files.walkFileTree(Paths.get(classDir), new FileVisitor<Path>() {
+        Files.walkFileTree(Paths.get(classDir), new FileVisitor<>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                 return FileVisitResult.CONTINUE;

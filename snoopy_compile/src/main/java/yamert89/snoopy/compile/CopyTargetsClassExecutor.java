@@ -5,7 +5,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import yamert89.snoopy.compile.visitors.TargetClassVisitor;
+import yamert89.snoopy.compile.adapters.TargetClassAdapter;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,17 +34,17 @@ public class CopyTargetsClassExecutor implements ClassExecutor {
             if (originalPath.contains("converted")) return;
             log.debug("execute path: {}", originalPath);
             var writer = new ClassWriter(reader, 0);
-            TargetClassVisitor targetClassVisitor = new TargetClassVisitor(Opcodes.ASM9, writer, classMetadata);
-            reader.accept(targetClassVisitor, 0);
+            TargetClassAdapter targetClassAdapter = new TargetClassAdapter(Opcodes.ASM9, writer, classMetadata);
+            reader.accept(targetClassAdapter, 0);
             var bytes = writer.toByteArray();
             var file = new File(originalPath);
             var path = file.toPath();
             var fileName = path.getFileName();
             Path converted = path.getParent().resolve("converted/");
             if (!converted.toFile().exists()) Files.createDirectory(converted);
-            Files.walkFileTree(converted, new FileVisitor<Path>() {
+            Files.walkFileTree(converted, new FileVisitor<>() {
                 @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                     return FileVisitResult.CONTINUE;
                 }
 
@@ -63,7 +63,7 @@ public class CopyTargetsClassExecutor implements ClassExecutor {
                 }
 
                 @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
                     return FileVisitResult.CONTINUE;
                 }
             });

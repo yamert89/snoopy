@@ -2,11 +2,13 @@ import fakes.ConstructorFieldsAssignedAdapter;
 import fakes.ConstructorFieldsAssignedAdapter2;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
 import yamert89.snoopy.compile.ClassMetadata;
 import yamert89.snoopy.compile.ResourcesUtil;
-import yamert89.snoopy.compile.meta.Descriptors;
-import yamert89.snoopy.compile.visitors.TargetClassVisitor;
+import yamert89.snoopy.compile.adapters.TargetClassAdapter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,11 +17,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ByteCodeTest {
 
@@ -78,8 +76,8 @@ public class ByteCodeTest {
         var is = new FileInputStream(classFilePath);
         var reader = new ClassReader(is);
         var writer = new ClassWriter(reader, 0);
-        TargetClassVisitor targetClassVisitor = new TargetClassVisitor(Opcodes.ASM9, writer, clMetadata);
-        reader.accept(targetClassVisitor, 0);
+        TargetClassAdapter targetClassAdapter = new TargetClassAdapter(Opcodes.ASM9, writer, clMetadata);
+        reader.accept(targetClassAdapter, 0);
         var bytes = writer.toByteArray();
         var targetFile = new File(targetStringPath);
         is.close();

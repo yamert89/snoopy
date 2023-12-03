@@ -1,12 +1,12 @@
-package yamert89.snoopy.compile.visitors;
+package yamert89.snoopy.compile.adapters;
 
 import org.objectweb.asm.AnnotationVisitor;
 
 import java.util.function.Supplier;
 
-public class ReadReplaceSqlAnnotationVisitor extends AnnotationVisitor {
+public class ReadReplaceSqlAnnotationAdapter extends AnnotationVisitor {
     private Supplier<String> prefixFun;
-    public ReadReplaceSqlAnnotationVisitor(int api) {
+    public ReadReplaceSqlAnnotationAdapter(int api) {
         super(api);
     }
 
