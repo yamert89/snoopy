@@ -16,9 +16,11 @@ public class ModifyClasses extends DefaultTask {
         String classDir = extension.getClassDir().getOrElse("classes/java/main");
         String resourcesDir = extension.getResourcesDir().getOrElse("resources/main");
         String baseDir = project.getLayout().getBuildDirectory().getAsFile().get().getPath();
+        classDir = extension.getClassDir().isPresent() ? classDir : (baseDir + "/" + classDir);
+        resourcesDir = extension.getResourcesDir().isPresent() ? resourcesDir : (baseDir + "/" + resourcesDir);
         System.out.println("Task snoopyCompile started with basePackage: " + basePackage);
         ClassModifier classModifier = new DefaultClassModifier();
 
-        classModifier.modify(baseDir + "/" + classDir, baseDir + "/" + resourcesDir);
+        classModifier.modify(classDir, resourcesDir); //todo basePackage not used
     }
 }
