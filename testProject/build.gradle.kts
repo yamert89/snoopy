@@ -26,10 +26,13 @@ tasks{
         useJUnitPlatform()
     }
     snoopyCompile {
-        mustRunAfter(classes)
+        //dependsOn(classes)
         doFirst { println("snoopy started...") }
     }
-    jar {
+
+    create<JavaExec>("runApp") {
+        classpath = sourceSets.main.get().runtimeClasspath
+        mainClass = "yamert89.snoopy.Main"
         dependsOn(snoopyCompile)
     }
 
