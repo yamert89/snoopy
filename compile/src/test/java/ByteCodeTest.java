@@ -1,12 +1,12 @@
 import data.StaticFieldsConsumer;
-import fakes.ConstructorFieldsAssignedAdapter;
-import fakes.ConstructorFieldsAssignedAdapter2;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
+import service.fakes.ConstructorFieldsAssignedAdapter;
+import service.fakes.ConstructorFieldsAssignedAdapter2;
 import yamert89.snoopy.compile.ClassMetadata;
 import yamert89.snoopy.compile.ResourcesUtil;
 import yamert89.snoopy.compile.adapters.TargetClassAdapter;

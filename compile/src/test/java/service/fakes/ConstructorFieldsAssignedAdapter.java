@@ -1,4 +1,4 @@
-package fakes;
+package service.fakes;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;

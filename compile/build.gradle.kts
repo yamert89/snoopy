@@ -24,17 +24,12 @@ dependencies {
 
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-
 publishing{
     repositories{
         maven("../../_gradle-plugins-repository")
     }
     publications {
         create<MavenPublication>("com"){
-            //from(components["java"])
             artifact(tasks.jar)
         }
     }
@@ -43,6 +38,11 @@ publishing{
 val jarName = "snoopy_compile.jar"
 
 tasks{
+    test {
+        useJUnitPlatform()
+        environment("snoopy.execPath", project.layout.buildDirectory.get().asFile.path)
+    }
+
     jar{
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         archiveFileName.set(jarName)
