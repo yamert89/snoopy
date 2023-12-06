@@ -1,3 +1,4 @@
+import data.StaticFieldsConsumer;
 import fakes.ConstructorFieldsAssignedAdapter;
 import fakes.ConstructorFieldsAssignedAdapter2;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,6 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class ByteCodeTest {
 
     @BeforeAll
@@ -27,42 +30,50 @@ public class ByteCodeTest {
     }
 
     @Test
-    public void finalFieldInjectedSuccessfully() throws IOException {
-        testClass(
-                "ReplaceSQLExampleCL.class",
+    public void finalField() throws IOException {
+        testFieldsInTheSameClass(
+                "ReplaceSQLExample.class",
                 new ConstructorFieldsAssignedAdapter(Opcodes.ASM9, "SQL1", new String(readResource("SQL1.sql"), StandardCharsets.UTF_8)),
                 new ClassMetadata(true, "SQL")
         );
     }
 
     @Test
-    public void notFinalFieldInjectedSuccessfully() throws IOException {
-        testClass(
-                "ReplaceSQLExampleCL.class",
+    public void notFinalField() throws IOException {
+        testFieldsInTheSameClass(
+                "ReplaceSQLExample.class",
                 new ConstructorFieldsAssignedAdapter(Opcodes.ASM9, "SQL2", new String(readResource("SQL2.sql"), StandardCharsets.UTF_8)),
                 new ClassMetadata(true, "SQL")
         );
     }
 
     @Test
-    public void privateNotFinalFieldInjectedSuccessfully() throws IOException {
-        testClass(
-                "ReplaceSQLExampleCL.class",
+    public void privateNotFinalField() throws IOException {
+        testFieldsInTheSameClass(
+                "ReplaceSQLExample.class",
                 new ConstructorFieldsAssignedAdapter(Opcodes.ASM9, "SQL3", new String(readResource("SQL3.sql"), StandardCharsets.UTF_8)),
                 new ClassMetadata(true, "SQL")
         );
     }
 
     @Test
-    public void fieldMarkedByReplaceSqlFieldInjectedSuccessfully() throws IOException {
-        testClass(
-                "ReplaceSQLFieldExampleCL.class",
+    public void fieldMarkedByReplaceSqlField() throws IOException {
+        testFieldsInTheSameClass(
+                "ReplaceSQLFieldExample.class",
                 new ConstructorFieldsAssignedAdapter2(Opcodes.ASM9, new String(readResource("SQL2.sql"), StandardCharsets.UTF_8)),
                 new ClassMetadata(true, null)
         );
     }
 
-    private void testClass(String className, ClassVisitor cv, ClassMetadata clMetadata) throws IOException{
+    @Test
+    public void getFinalFieldFromAnotherClass() throws IOException {
+        var className = "ReplaceSQLExample.class";
+        var clMetadata = new ClassMetadata(true, "SQL");
+        createTargetFile(className, clMetadata);
+        assertEquals(new String(readResource("SQL4.sql"), StandardCharsets.UTF_8), StaticFieldsConsumer.getFinalStringFromGetter());
+    }
+
+    private void testFieldsInTheSameClass(String className, ClassVisitor cv, ClassMetadata clMetadata) throws IOException {
         File targetFile = createTargetFile(className, clMetadata);
         var is = new FileInputStream(targetFile);
         var reader = new ClassReader(is);
