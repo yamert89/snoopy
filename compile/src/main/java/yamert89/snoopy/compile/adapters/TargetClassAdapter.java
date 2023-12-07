@@ -41,7 +41,8 @@ public class TargetClassAdapter extends ClassVisitor {
                     String newValue = strBuilder.toString();
                     log.debug("Field's value \"{}\" will be replace with \"{}\"", value, newValue);
                     replacementFields.put(name, newValue);
-                    return super.visitField(access, name, descriptor, signature, value);
+                    Object resultVal = access == Opcodes.ACC_FINAL ? newValue : value;
+                    return super.visitField(access, name, descriptor, signature, resultVal);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                     throw new RuntimeException(e);

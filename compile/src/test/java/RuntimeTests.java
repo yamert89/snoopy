@@ -1,8 +1,8 @@
 import data.ReplaceSQLExample;
 import data.ReplaceSQLFieldExample;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import service.ClearFolderVisitor;
 import yamert89.snoopy.compile.ClassModifier;
 import yamert89.snoopy.compile.DefaultClassModifier;
 
@@ -25,9 +25,9 @@ public class RuntimeTests {
         classModifier.modify(buildPath + "/classes/java/test/data", buildPath + "/resources/test");
     }
 
-    @AfterAll
+    //@AfterAll
     public static void clean() throws IOException {
-        //Files.walkFileTree(Paths.get(buildPath), new ClearFolderVisitor());
+        Files.walkFileTree(Paths.get(buildPath), new ClearFolderVisitor());
     }
 
     @Test
@@ -46,6 +46,12 @@ public class RuntimeTests {
     public void privateNotFinalField() throws Exception {
         String sql3 = getField("SQL3", new ReplaceSQLExample());
         assertEquals(getSingleRowValue("SQL3"), sql3);
+    }
+
+    @Test
+    public void privateNotFinalNotInitializedField() throws Exception {
+        String sql3 = getField("SQL5", new ReplaceSQLExample());
+        assertEquals(getSingleRowValue("SQL5"), sql3);
     }
 
     @Test
