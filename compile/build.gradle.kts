@@ -41,6 +41,11 @@ tasks{
     test {
         useJUnitPlatform()
         environment("snoopy.execPath", project.layout.buildDirectory.get().asFile.path)
+        //dependsOn(clean, classes)
+    }
+
+    compileJava {
+        dependsOn(clean)
     }
 
     jar{

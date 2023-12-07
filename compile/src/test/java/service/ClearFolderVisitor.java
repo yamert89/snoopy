@@ -18,7 +18,7 @@ public class ClearFolderVisitor implements FileVisitor<Path> {
         try {
             Files.delete(file);
         } catch (IOException e) {
-            //not matter
+            if (file.endsWith(".class")) throw new RuntimeException();
         }
         return FileVisitResult.CONTINUE;
     }
