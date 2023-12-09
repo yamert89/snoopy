@@ -1,4 +1,6 @@
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
@@ -15,8 +17,14 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Order(1)
 public class CompileTest {
     private String dataPath;
+
+    @BeforeAll
+    public static void init() {
+        System.out.println("Compile tests start...");
+    }
     @BeforeEach
     public void setProps(){
         String s = FileSystems.getDefault().getSeparator();

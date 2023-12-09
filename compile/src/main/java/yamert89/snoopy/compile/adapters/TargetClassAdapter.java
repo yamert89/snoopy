@@ -3,7 +3,6 @@ package yamert89.snoopy.compile.adapters;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.ClassMetadata;
@@ -13,6 +12,8 @@ import yamert89.snoopy.compile.meta.Descriptors;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.objectweb.asm.Opcodes.*;
 
 
 public class TargetClassAdapter extends ClassVisitor {
@@ -41,7 +42,7 @@ public class TargetClassAdapter extends ClassVisitor {
                     String newValue = strBuilder.toString();
                     log.debug("Field's value \"{}\" will be replace with \"{}\"", value, newValue);
                     replacementFields.put(name, newValue);
-                    Object resultVal = access == Opcodes.ACC_FINAL ? newValue : value;
+                    Object resultVal = access == ACC_PUBLIC + ACC_FINAL ? newValue : value;
                     return super.visitField(access, name, descriptor, signature, resultVal);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
@@ -56,7 +57,7 @@ public class TargetClassAdapter extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
         if (name.equals(Descriptors.INIT))
-            return new InitMethodFieldsAssignAdapter(replacementFields, Opcodes.ASM9, mv);
+            return new InitMethodFieldsAssignAdapter(replacementFields, ASM9, mv);
         return mv;
     }
 

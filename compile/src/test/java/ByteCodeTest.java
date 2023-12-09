@@ -1,5 +1,6 @@
 import data.StaticFieldsConsumer;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -22,10 +23,12 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Order(2)
 public class ByteCodeTest {
 
     @BeforeAll
     public static void init(){
+        System.out.println("Bytecode tests start...");
         ResourcesUtil.getInstance(new File("").getAbsolutePath() + "/build/resources/test");
     }
 
