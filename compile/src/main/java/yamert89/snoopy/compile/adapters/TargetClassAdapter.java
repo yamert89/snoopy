@@ -6,6 +6,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.ClassMetadata;
+import yamert89.snoopy.compile.MappedField;
 import yamert89.snoopy.compile.ResourcesUtil;
 import yamert89.snoopy.compile.meta.Descriptors;
 
@@ -30,7 +31,10 @@ public class TargetClassAdapter extends ClassVisitor {
     public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
         log.debug("started analyzing field: {{}}", name);
 
-        if (classMetadata.getTargetFieldsPrefix() != null && name.startsWith(classMetadata.getTargetFieldsPrefix())) {
+        if (
+                classMetadata.getTargetFieldsPrefix() != null && name.startsWith(classMetadata.getTargetFieldsPrefix())
+                        || classMetadata.getMappedFields().contains(new MappedField(name))
+        ) {
             File resource = ResourcesUtil.getByName("/" + name + ".sql");
             if (resource != null ){
                 try {
