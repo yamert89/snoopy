@@ -6,6 +6,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import yamert89.snoopy.compile.ClassMetadata;
 import yamert89.snoopy.compile.ClassScanner;
+import yamert89.snoopy.compile.MappedField;
 import yamert89.snoopy.compile.adapters.ClassMetadataAdapter;
 
 import java.io.File;
@@ -44,17 +45,18 @@ public class CompileTest {
 
     @Test
     public void correctMetadataForReplaceSqlAnnotation() throws IOException {
-        testMetadata("ReplaceSQLExample.class", new ClassMetadata(true, "SQL"));
+        testMetadata("ReplaceSQLExample.class", ClassMetadata.targetInstanceWithPrefix("SQL"));
     }
 
     @Test
-    public void correctMetadataForMapperAnnotation() throws IOException {
-        testMetadata("ReplaceSQLFieldExample.class", new ClassMetadata(true, null));
+    public void correctMetadataForReplaceSqlFieldAnnotation() throws IOException {
+        Set<MappedField> mappedFields = Set.of(new MappedField("SQL2"));
+        testMetadata("ReplaceSQLFieldExample.class", ClassMetadata.targetInstanceWithMappedFields(mappedFields));
     }
 
     @Test
     public void correctMetadataForRegularClass() throws IOException {
-        testMetadata("RegularClass.class", new ClassMetadata(false, null));
+        testMetadata("RegularClass.class", ClassMetadata.notTargetInstance());
     }
 
     private void testMetadata(String className, ClassMetadata exceptedMetadata) throws IOException{

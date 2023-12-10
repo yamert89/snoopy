@@ -1,4 +1,5 @@
 import data.ReplaceSQLExample;
+import data.ReplaceSQLFieldExample;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class RuntimeTests {
     private static String buildPath;
     private static Object replaceSQLExample;
+    private static Object replaceSQLFieldExample;
 
     @BeforeAll
     public static void modifyBytecode() throws Exception {
@@ -29,6 +31,8 @@ public class RuntimeTests {
         classModifier.modify(buildPath + "/classes/java/test/data", buildPath + "/resources/test");
         Class<?> cl = new ReloadClassLoader().loadClass(ReplaceSQLExample.class);
         replaceSQLExample = cl.getConstructor().newInstance();
+        Class<?> clF = new ReloadClassLoader().loadClass(ReplaceSQLFieldExample.class);
+        replaceSQLFieldExample = clF.getConstructor().newInstance();
     }
 
     //@AfterAll
@@ -62,7 +66,7 @@ public class RuntimeTests {
 
     @Test
     public void fieldMarkedByReplaceSqlField() throws Exception {
-        String sql2 = getField("SQL2", replaceSQLExample);
+        String sql2 = getField("SQL2", replaceSQLFieldExample);
         assertEquals(getSingleRowValue("SQL2"), sql2);
     }
 

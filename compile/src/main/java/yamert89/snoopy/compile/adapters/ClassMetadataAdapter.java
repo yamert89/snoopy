@@ -5,12 +5,16 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
 import yamert89.snoopy.compile.ClassMetadata;
+import yamert89.snoopy.compile.MappedField;
 import yamert89.snoopy.compile.meta.Descriptors;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class ClassMetadataAdapter extends ClassVisitor {
     private boolean isTarget = false;
+    private final Set<MappedField> mappedFields = new HashSet<>();
 
     private final ReadReplaceSqlAnnotationAdapter annotationVisitor = new ReadReplaceSqlAnnotationAdapter(Opcodes.ASM9);
 
@@ -34,6 +38,7 @@ public class ClassMetadataAdapter extends ClassVisitor {
             public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
                 if (descriptor.equals(Descriptors.REPLACE_SQL_FIELD)) {
                     setAsTarget();
+                    mappedFields.add(new MappedField(name));
                 }
                 return super.visitAnnotation(descriptor, visible);
             }
@@ -47,6 +52,12 @@ public class ClassMetadataAdapter extends ClassVisitor {
 
     public ClassMetadata getClassMetadata() {
         Supplier<String> targetFieldsPrefixFun = annotationVisitor.getPrefixFun();
-        return new ClassMetadata(isTarget, targetFieldsPrefixFun == null ? null : targetFieldsPrefixFun.get());
+        return targetFieldsPrefixFun == null && mappedFields.isEmpty() ?
+                ClassMetadata.notTargetInstance()
+                :
+                mappedFields.isEmpty() ?
+                        ClassMetadata.targetInstanceWithPrefix(targetFieldsPrefixFun.get())
+                        :
+                        ClassMetadata.targetInstanceWithMappedFields(mappedFields);
     }
 }
