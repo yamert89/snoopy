@@ -6,6 +6,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.util.CheckClassAdapter;
 import service.fakes.ConstructorFieldsAssignedAdapter;
 import service.fakes.ConstructorFieldsAssignedAdapter2;
 import yamert89.snoopy.compile.ClassMetadata;
@@ -94,7 +95,8 @@ public class ByteCodeTest {
         var reader = new ClassReader(is);
         var writer = new ClassWriter(reader, 0);
         TargetClassAdapter targetClassAdapter = new TargetClassAdapter(Opcodes.ASM9, writer, clMetadata);
-        reader.accept(targetClassAdapter, 0);
+        ClassVisitor wrapped = new CheckClassAdapter(targetClassAdapter);
+        reader.accept(wrapped, 0);
         var bytes = writer.toByteArray();
         var targetFile = new File(targetStringPath);
         is.close();
