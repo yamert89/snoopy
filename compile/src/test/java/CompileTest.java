@@ -40,7 +40,7 @@ public class CompileTest {
         Set<String> scanResult = scanner.scan();
         String expected = dataPath + "ReplaceSQLExample.class";
         assertTrue(scanResult.contains(expected));
-        assertEquals(4, scanResult.size());
+        assertEquals(5, scanResult.size());
     }
 
     @Test

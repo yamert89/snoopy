@@ -2,10 +2,10 @@ package yamert89.snoopy.compile;
 
 import java.util.Objects;
 
-public record ClassField(String name, boolean isTarget, String newValue) {
+public record ClassField(String name, boolean isTarget, boolean isInitialized, String newValue) {
 
     public static ClassField notTargetInstance(String name) {
-        return new ClassField(name, false, null);
+        return new ClassField(name, false, false, null);
     }
 
     @Override

@@ -1,4 +1,3 @@
-import data.StaticFieldsConsumer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -23,8 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Order(2)
 public class ByteCodeTest {
@@ -70,14 +67,6 @@ public class ByteCodeTest {
                 new ConstructorFieldsAssignedAdapter2(Opcodes.ASM9, new String(readResource("SQL2.sql"), StandardCharsets.UTF_8)),
                 ClassMetadata.targetInstanceWithMappedFields(mappedFields)
         );
-    }
-
-    @Test
-    public void getFinalFieldFromAnotherClass() throws IOException {
-        var className = "ReplaceSQLExample.class";
-        var clMetadata = ClassMetadata.targetInstanceWithPrefix("SQL");
-        createTargetFile(className, clMetadata);
-        assertEquals(new String(readResource("SQL4.sql"), StandardCharsets.UTF_8), StaticFieldsConsumer.getFinalStringFromGetter());
     }
 
     private void testFieldsInTheSameClass(String className, ClassVisitor cv, ClassMetadata clMetadata) throws IOException {

@@ -1,3 +1,4 @@
+import data.NotInitialized;
 import data.ReplaceSQLExample;
 import data.ReplaceSQLFieldExample;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,6 +23,7 @@ public class RuntimeTests {
     private static String buildPath;
     private static Object replaceSQLExample;
     private static Object replaceSQLFieldExample;
+    private static Object notInitialized;
 
     @BeforeAll
     public static void modifyBytecode() throws Exception {
@@ -33,6 +35,8 @@ public class RuntimeTests {
         replaceSQLExample = cl.getConstructor().newInstance();
         Class<?> clF = new ReloadClassLoader().loadClass(ReplaceSQLFieldExample.class);
         replaceSQLFieldExample = clF.getConstructor().newInstance();
+        Class<?> clNI = new ReloadClassLoader().loadClass(NotInitialized.class);
+        notInitialized = clNI.getConstructor().newInstance();
     }
 
     //@AfterAll
@@ -42,32 +46,50 @@ public class RuntimeTests {
 
     @Test
     public void finalField() throws Exception {
-        String sql1 = getField("SQL1", replaceSQLExample);
-        assertEquals(getSingleRowValue("SQL1"), sql1);
+        String sql = getField("SQL1", replaceSQLExample);
+        assertEquals(getSingleRowValue("SQL1"), sql);
     }
 
     @Test
     public void notFinalField() throws Exception {
-        String sql2 = getField("SQL2", replaceSQLExample);
-        assertEquals(getSingleRowValue("SQL2"), sql2);
+        String sql = getField("SQL2", replaceSQLExample);
+        assertEquals(getSingleRowValue("SQL2"), sql);
     }
 
     @Test
     public void privateNotFinalField() throws Exception {
-        String sql3 = getField("SQL3", replaceSQLExample);
-        assertEquals(getSingleRowValue("SQL3"), sql3);
+        String sql = getField("SQL3", replaceSQLExample);
+        assertEquals(getSingleRowValue("SQL3"), sql);
     }
 
     @Test
     public void privateNotFinalNotInitializedField() throws Exception {
-        String sql3 = getField("SQL5", replaceSQLExample);
-        assertEquals(getSingleRowValue("SQL5"), sql3);
+        String sql = getField("SQL5", replaceSQLExample);
+        assertEquals(getSingleRowValue("SQL5"), sql);
     }
 
     @Test
     public void fieldMarkedByReplaceSqlField() throws Exception {
-        String sql2 = getField("SQL2", replaceSQLFieldExample);
-        assertEquals(getSingleRowValue("SQL2"), sql2);
+        String sql = getField("SQL2", replaceSQLFieldExample);
+        assertEquals(getSingleRowValue("SQL2"), sql);
+    }
+
+    @Test
+    public void notInitializedFieldInTheStart() throws Exception {
+        String sql = getField("SQL1", notInitialized);
+        assertEquals(getSingleRowValue("SQL1"), sql);
+    }
+
+    @Test
+    public void notInitializedFieldInTheMiddle() throws Exception {
+        String sql = getField("SQL3", notInitialized);
+        assertEquals(getSingleRowValue("SQL3"), sql);
+    }
+
+    @Test
+    public void notInitializedFieldInTheEnd() throws Exception {
+        String sql = getField("SQL5", notInitialized);
+        assertEquals(getSingleRowValue("SQL5"), sql);
     }
 
 

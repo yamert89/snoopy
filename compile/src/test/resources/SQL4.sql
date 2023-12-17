@@ -1,1 +1,1 @@
-select sql4.col from sql4;
+select * from sql4;

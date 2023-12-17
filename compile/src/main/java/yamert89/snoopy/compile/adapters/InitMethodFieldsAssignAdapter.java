@@ -15,6 +15,7 @@ public class InitMethodFieldsAssignAdapter extends MethodVisitor {
 
     protected InitMethodFieldsAssignAdapter(LinkedList<ClassField> classFields, String className, int api, MethodVisitor methodVisitor) {
         super(api, methodVisitor);
+        assert !classFields.isEmpty();
         this.classFields = classFields;
         CLASS_INTERNAL_NAME = className;
     }
@@ -56,12 +57,24 @@ public class InitMethodFieldsAssignAdapter extends MethodVisitor {
     }
 
     @Override
+    public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
+        super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+        if (opcode == INVOKESPECIAL) {
+            ClassField classField = classFields.peek();
+            if (classField.isTarget() && !classField.isInitialized()) classField = classFields.poll();
+            while (classField.isTarget() && !classField.isInitialized()) {
+                initializeField(CLASS_INTERNAL_NAME, classField.name(), classField.newValue());
+                classField = classFields.poll();
+            }
+        }
+    }
+
+    @Override
     public void visitInsn(int opcode) {  //todo add initContainsPutfield
         if (opcode == RETURN) {
             classFields.stream().filter(ClassField::isTarget).forEach(classField -> initializeField(
                     CLASS_INTERNAL_NAME,
                     classField.name(),
-                    Descriptors.STRING,
                     classField.newValue())
             );
         }
@@ -73,10 +86,10 @@ public class InitMethodFieldsAssignAdapter extends MethodVisitor {
         super.visitEnd();
     }
 
-    private void initializeField(String owner, String name, String descriptor, Object value) {
+    private void initializeField(String owner, String name, Object value) {
         super.visitVarInsn(ALOAD, 0);
         super.visitLdcInsn(value);
-        super.visitFieldInsn(PUTFIELD, owner, name, descriptor);
+        super.visitFieldInsn(PUTFIELD, owner, name, Descriptors.STRING);
     }
 
 }

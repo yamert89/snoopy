@@ -43,7 +43,7 @@ public class TargetClassAdapter extends ClassVisitor {
 
         if (
                 classMetadata.getTargetFieldsPrefix() != null && name.startsWith(classMetadata.getTargetFieldsPrefix())
-                        || classMetadata.getMappedFields().contains(new MappedField(name)) //todo определить предыдущее поле?
+                        || classMetadata.getMappedFields().contains(new MappedField(name))
         ) {
             File resource = ResourcesUtil.getByName("/" + name + ".sql");
             if (resource != null ){
@@ -57,7 +57,7 @@ public class TargetClassAdapter extends ClassVisitor {
                     String newValue = strBuilder.toString();
                     log.debug("Field's value \"{}\" will be replace with \"{}\"", value, newValue);
 
-                    classFields.add(new ClassField(name, true, newValue));
+                    classFields.add(new ClassField(name, true, value != null, newValue));
 
                     Object resultVal = access == ACC_PUBLIC + ACC_FINAL ? newValue : value;
                     return super.visitField(access, name, descriptor, signature, resultVal);
