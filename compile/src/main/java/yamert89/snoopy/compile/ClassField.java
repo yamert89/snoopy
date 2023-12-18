@@ -57,4 +57,14 @@ public class ClassField {
     public int hashCode() {
         return Objects.hash(name);
     }
+
+    @Override
+    public String toString() {
+        return "ClassField{" +
+                "name='" + name + '\'' +
+                ", isTarget=" + isTarget +
+                ", isInitialized=" + isInitialized +
+                ", newValue='" + newValue + '\'' +
+                '}';
+    }
 }

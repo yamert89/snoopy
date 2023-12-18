@@ -27,29 +27,32 @@ public class InitMethodFieldsAssignAdapter extends MethodVisitor {
         } else super.visitLdcInsn(value);
     }
 
-   /* @Override
+    @Override
     public void visitVarInsn(int opcode, int varIndex) {
-        if (opcode == ALOAD && varIndex == 0) return;
+        //if (opcode == ALOAD && varIndex == 0) return;
         super.visitVarInsn(opcode, varIndex);
-    }*/
+    }
 
     @Override
     public void visitFieldInsn(int opcode, String owner, String name, String descriptor) {
         if (opcode == PUTFIELD
-                && descriptor.equals(Descriptors.STRING)) {
-            ClassField classField;
-
-            do {
+                && descriptor.equals(Descriptors.STRING)
+                && !classFields.isEmpty()) {
+            ClassField classField = classFields.poll();
+            while (classField != null && !classField.getName().equals(name)) {
+                super.visitLdcInsn(classField.getNewValue());
+                super.visitFieldInsn(PUTFIELD, owner, classField.getName(), Descriptors.STRING);
                 classField = classFields.poll();
-                if (classField.isTarget()) {
-                    super.visitLdcInsn(classField.getNewValue());
-                    super.visitFieldInsn(opcode, owner, name, descriptor);
-                } else {
-                    super.visitLdcInsn(cachedLdcValue);
-                    super.visitFieldInsn(opcode, owner, name, descriptor);
-                }
+                super.visitVarInsn(ALOAD, 0);
+            }
 
-            } while (classField != null && !classField.getName().equals(name));
+            if (classField != null && classField.isTarget()) {
+                super.visitLdcInsn(classField.getNewValue());
+                super.visitFieldInsn(opcode, owner, name, descriptor);
+            } else {
+                super.visitLdcInsn(cachedLdcValue);
+                super.visitFieldInsn(opcode, owner, name, descriptor);
+            }
 
         } else {
             super.visitFieldInsn(opcode, owner, name, descriptor);
@@ -61,10 +64,10 @@ public class InitMethodFieldsAssignAdapter extends MethodVisitor {
         super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
         if (opcode == INVOKESPECIAL) {
             ClassField classField = classFields.peek();
-            if (classField.isTarget() && !classField.isInitialized()) classField = classFields.poll();
             while (classField.isTarget() && !classField.isInitialized()) {
+                classFields.remove();
                 initializeField(CLASS_INTERNAL_NAME, classField.getName(), classField.getNewValue());
-                classField = classFields.poll();
+                classField = classFields.peek();
             }
         }
     }
