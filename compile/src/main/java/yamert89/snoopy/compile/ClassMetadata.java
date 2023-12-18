@@ -1,40 +1,31 @@
 package yamert89.snoopy.compile;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public class ClassMetadata {
     private final boolean isTarget;
     private final String targetFieldsPrefix;
-    private final Set<MappedField> mappedFields;
+    private final List<ClassField> classFields;
 
     public static ClassMetadata notTargetInstance() {
-        return new ClassMetadata();
+        return new ClassMetadata(false, null, null);
     }
 
-    public static ClassMetadata defaultTargetInstance() {
-        return new ClassMetadata(true, "SQL", Collections.emptySet());
+    public static ClassMetadata targetInstanceWithClassFields(List<ClassField> classFields) {
+        return new ClassMetadata(true, null, classFields);
     }
 
-    public static ClassMetadata targetInstanceWithPrefix(String targetFieldsPrefix) {
-        return new ClassMetadata(true, targetFieldsPrefix, Collections.emptySet());
+    public ClassMetadata(String targetFieldsPrefix, List<ClassField> classFields) {
+        isTarget = true;
+        this.targetFieldsPrefix = targetFieldsPrefix;
+        this.classFields = classFields;
     }
 
-    public static ClassMetadata targetInstanceWithMappedFields(Set<MappedField> mappedFields) {
-        return new ClassMetadata(true, null, mappedFields);
-    }
-
-    private ClassMetadata() {
-        isTarget = false;
-        targetFieldsPrefix = null;
-        mappedFields = Collections.emptySet();
-    }
-
-    private ClassMetadata(boolean isTarget, String targetFieldsPrefix, Set<MappedField> mappedFields) {
+    private ClassMetadata(boolean isTarget, String targetFieldsPrefix, List<ClassField> classFields) {
         this.isTarget = isTarget;
         this.targetFieldsPrefix = targetFieldsPrefix;
-        this.mappedFields = mappedFields;
+        this.classFields = classFields;
     }
 
     public boolean isTarget() {
@@ -45,8 +36,8 @@ public class ClassMetadata {
         return targetFieldsPrefix;
     }
 
-    public Set<MappedField> getMappedFields() {
-        return mappedFields;
+    public List<ClassField> getClassFields() {
+        return classFields;
     }
 
     @Override
@@ -54,20 +45,13 @@ public class ClassMetadata {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         ClassMetadata that = (ClassMetadata) object;
-        return isTarget == that.isTarget && Objects.equals(targetFieldsPrefix, that.targetFieldsPrefix) && Objects.equals(mappedFields, that.mappedFields);
+        return isTarget == that.isTarget && Objects.equals(targetFieldsPrefix, that.targetFieldsPrefix) && Objects.equals(classFields, that.classFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(isTarget, targetFieldsPrefix, mappedFields);
+        return Objects.hash(isTarget, targetFieldsPrefix, classFields);
     }
 
-    @Override
-    public String toString() {
-        return "ClassMetadata{" +
-                "isTarget=" + isTarget +
-                ", targetFieldsPrefix='" + targetFieldsPrefix + '\'' +
-                ", mappedFields=" + mappedFields +
-                '}';
-    }
+
 }

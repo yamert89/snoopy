@@ -4,15 +4,17 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
+import yamert89.snoopy.compile.ClassField;
 import yamert89.snoopy.compile.ClassMetadata;
 import yamert89.snoopy.compile.ClassScanner;
-import yamert89.snoopy.compile.MappedField;
+import yamert89.snoopy.compile.ResourcesUtil;
 import yamert89.snoopy.compile.adapters.ClassMetadataAdapter;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,6 +27,7 @@ public class CompileTest {
     @BeforeAll
     public static void init() {
         System.out.println("Compile tests start...");
+        ResourcesUtil.getInstance(new File("").getAbsolutePath() + "/build/resources/test");
     }
     @BeforeEach
     public void setProps(){
@@ -45,13 +48,25 @@ public class CompileTest {
 
     @Test
     public void correctMetadataForReplaceSqlAnnotation() throws IOException {
-        testMetadata("ReplaceSQLExample.class", ClassMetadata.targetInstanceWithPrefix("SQL"));
+        ClassMetadata expected = new ClassMetadata("SQL", List.of(
+                new ClassField("SQL1", true, true, "select * from sql1;"),
+                new ClassField("SQL2", true, true, "select * from sql2;"),
+                new ClassField("SQL3", true, true, "select * from sql3;"),
+                ClassField.notTargetInstance("regularField"),
+                new ClassField("SQL4", true, true, "select * from sql4;"),
+                new ClassField("SQL5", true, false, "select * from sql5;")
+        ));
+
+        testMetadata("ReplaceSQLExample.class", expected);
     }
 
     @Test
     public void correctMetadataForReplaceSqlFieldAnnotation() throws IOException {
-        Set<MappedField> mappedFields = Set.of(new MappedField("SQL2"));
-        testMetadata("ReplaceSQLFieldExample.class", ClassMetadata.targetInstanceWithMappedFields(mappedFields));
+        ClassMetadata expected = ClassMetadata.targetInstanceWithClassFields(List.of(
+                new ClassField("SQL2", true, true, "select * from sql2;"),
+                ClassField.notTargetInstance("regularField")
+        ));
+        testMetadata("ReplaceSQLFieldExample.class", expected);
     }
 
     @Test

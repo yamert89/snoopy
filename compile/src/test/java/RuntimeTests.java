@@ -8,7 +8,9 @@ import service.ClearFolderVisitor;
 import service.ReloadClassLoader;
 import yamert89.snoopy.compile.ClassModifier;
 import yamert89.snoopy.compile.DefaultClassModifier;
+import yamert89.snoopy.compile.ResourcesUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +31,7 @@ public class RuntimeTests {
     public static void modifyBytecode() throws Exception {
         System.out.println("Runtime tests start...");
         buildPath = System.getenv("snoopy.execPath");
+        ResourcesUtil.getInstance(new File("").getAbsolutePath() + "/build/resources/test");
         ClassModifier classModifier = new DefaultClassModifier();
         classModifier.modify(buildPath + "/classes/java/test/data", buildPath + "/resources/test");
         Class<?> cl = new ReloadClassLoader().loadClass(ReplaceSQLExample.class);

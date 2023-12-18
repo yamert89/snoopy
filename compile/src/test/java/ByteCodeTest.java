@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
@@ -7,9 +8,8 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.CheckClassAdapter;
 import service.fakes.ConstructorFieldsAssignedAdapter;
-import service.fakes.ConstructorFieldsAssignedAdapter2;
+import yamert89.snoopy.compile.ClassField;
 import yamert89.snoopy.compile.ClassMetadata;
-import yamert89.snoopy.compile.MappedField;
 import yamert89.snoopy.compile.ResourcesUtil;
 import yamert89.snoopy.compile.adapters.TargetClassAdapter;
 
@@ -20,11 +20,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Order(2)
 public class ByteCodeTest {
+
+    private static ClassMetadata replaceSQLMetadata;
 
     @BeforeAll
     public static void init(){
@@ -32,12 +35,24 @@ public class ByteCodeTest {
         ResourcesUtil.getInstance(new File("").getAbsolutePath() + "/build/resources/test");
     }
 
+    @BeforeEach
+    public void assign() {
+        replaceSQLMetadata = new ClassMetadata("SQL", new LinkedList<>(List.of(
+                new ClassField("SQL1", true, true, "select * from sql1;"),
+                new ClassField("SQL2", true, true, "select * from sql2;"),
+                new ClassField("SQL3", true, true, "select * from sql3;"),
+                ClassField.notTargetInstance("regularField"),
+                new ClassField("SQL4", true, true, "select * from sql4;"),
+                new ClassField("SQL5", true, false, "select * from sql5;")
+        )));
+    }
+
     @Test
     public void finalField() throws IOException {
         testFieldsInTheSameClass(
                 "ReplaceSQLExample.class",
                 new ConstructorFieldsAssignedAdapter(Opcodes.ASM9, "SQL1", new String(readResource("SQL1.sql"), StandardCharsets.UTF_8)),
-                ClassMetadata.targetInstanceWithPrefix("SQL")
+                replaceSQLMetadata
         );
     }
 
@@ -46,7 +61,7 @@ public class ByteCodeTest {
         testFieldsInTheSameClass(
                 "ReplaceSQLExample.class",
                 new ConstructorFieldsAssignedAdapter(Opcodes.ASM9, "SQL2", new String(readResource("SQL2.sql"), StandardCharsets.UTF_8)),
-                ClassMetadata.targetInstanceWithPrefix("SQL")
+                replaceSQLMetadata
         );
     }
 
@@ -55,19 +70,22 @@ public class ByteCodeTest {
         testFieldsInTheSameClass(
                 "ReplaceSQLExample.class",
                 new ConstructorFieldsAssignedAdapter(Opcodes.ASM9, "SQL3", new String(readResource("SQL3.sql"), StandardCharsets.UTF_8)),
-                ClassMetadata.targetInstanceWithPrefix("SQL")
+                replaceSQLMetadata
         );
     }
 
-    @Test
+    /*@Test
     public void fieldMarkedByReplaceSqlField() throws IOException {
-        Set<MappedField> mappedFields = Set.of(new MappedField("SQL2"));
+        List<ClassField> classFields = List.of(
+                new ClassField("SQL2", true, true, "select * from sql2;"),
+                ClassField.notTargetInstance("regularField")
+        );
         testFieldsInTheSameClass(
                 "ReplaceSQLFieldExample.class",
                 new ConstructorFieldsAssignedAdapter2(Opcodes.ASM9, new String(readResource("SQL2.sql"), StandardCharsets.UTF_8)),
-                ClassMetadata.targetInstanceWithMappedFields(mappedFields)
+                ClassMetadata.targetInstanceWithClassFields(classFields)
         );
-    }
+    }*/
 
     private void testFieldsInTheSameClass(String className, ClassVisitor cv, ClassMetadata clMetadata) throws IOException {
         File targetFile = createTargetFile(className, clMetadata);

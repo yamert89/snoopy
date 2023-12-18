@@ -42,14 +42,14 @@ public class InitMethodFieldsAssignAdapter extends MethodVisitor {
             do {
                 classField = classFields.poll();
                 if (classField.isTarget()) {
-                    super.visitLdcInsn(classField.newValue());
+                    super.visitLdcInsn(classField.getNewValue());
                     super.visitFieldInsn(opcode, owner, name, descriptor);
                 } else {
                     super.visitLdcInsn(cachedLdcValue);
                     super.visitFieldInsn(opcode, owner, name, descriptor);
                 }
 
-            } while (classField != null && !classField.name().equals(name));
+            } while (classField != null && !classField.getName().equals(name));
 
         } else {
             super.visitFieldInsn(opcode, owner, name, descriptor);
@@ -63,7 +63,7 @@ public class InitMethodFieldsAssignAdapter extends MethodVisitor {
             ClassField classField = classFields.peek();
             if (classField.isTarget() && !classField.isInitialized()) classField = classFields.poll();
             while (classField.isTarget() && !classField.isInitialized()) {
-                initializeField(CLASS_INTERNAL_NAME, classField.name(), classField.newValue());
+                initializeField(CLASS_INTERNAL_NAME, classField.getName(), classField.getNewValue());
                 classField = classFields.poll();
             }
         }
@@ -74,8 +74,8 @@ public class InitMethodFieldsAssignAdapter extends MethodVisitor {
         if (opcode == RETURN) {
             classFields.stream().filter(ClassField::isTarget).forEach(classField -> initializeField(
                     CLASS_INTERNAL_NAME,
-                    classField.name(),
-                    classField.newValue())
+                    classField.getName(),
+                    classField.getNewValue())
             );
         }
         super.visitInsn(opcode);
