@@ -39,6 +39,13 @@ public class InitMethodFieldsAssignAdapter extends MethodVisitor {
                 && descriptor.equals(Descriptors.STRING)
                 && !classFields.isEmpty()) {
             ClassField classField = classFields.poll();
+
+            if (!classField.isTarget()) {
+                super.visitLdcInsn(cachedLdcValue);
+                super.visitFieldInsn(opcode, owner, name, descriptor);
+                return;
+            }
+
             while (classField != null && !classField.getName().equals(name)) {
                 super.visitLdcInsn(classField.getNewValue());
                 super.visitFieldInsn(PUTFIELD, owner, classField.getName(), Descriptors.STRING);
@@ -73,7 +80,7 @@ public class InitMethodFieldsAssignAdapter extends MethodVisitor {
     }
 
     @Override
-    public void visitInsn(int opcode) {  //todo add initContainsPutfield
+    public void visitInsn(int opcode) {
         if (opcode == RETURN) {
             classFields.stream().filter(ClassField::isTarget).forEach(classField -> initializeField(
                     CLASS_INTERNAL_NAME,

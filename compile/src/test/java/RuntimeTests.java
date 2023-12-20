@@ -1,3 +1,4 @@
+import data.Getters;
 import data.NotInitialized;
 import data.ReplaceSQLExample;
 import data.ReplaceSQLFieldExample;
@@ -13,6 +14,7 @@ import yamert89.snoopy.compile.ResourcesUtil;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -26,6 +28,7 @@ public class RuntimeTests {
     private static Object replaceSQLExample;
     private static Object replaceSQLFieldExample;
     private static Object notInitialized;
+    private static Object getters;
 
     @BeforeAll
     public static void modifyBytecode() throws Exception {
@@ -34,12 +37,15 @@ public class RuntimeTests {
         ResourcesUtil.getInstance(new File("").getAbsolutePath() + "/build/resources/test");
         ClassModifier classModifier = new DefaultClassModifier();
         classModifier.modify(buildPath + "/classes/java/test/data", buildPath + "/resources/test");
-        Class<?> cl = new ReloadClassLoader().loadClass(ReplaceSQLExample.class);
+        var classLoader = new ReloadClassLoader();
+        Class<?> cl = classLoader.loadClass(ReplaceSQLExample.class);
         replaceSQLExample = cl.getConstructor().newInstance();
-        Class<?> clF = new ReloadClassLoader().loadClass(ReplaceSQLFieldExample.class);
+        Class<?> clF = classLoader.loadClass(ReplaceSQLFieldExample.class);
         replaceSQLFieldExample = clF.getConstructor().newInstance();
-        Class<?> clNI = new ReloadClassLoader().loadClass(NotInitialized.class);
+        Class<?> clNI = classLoader.loadClass(NotInitialized.class);
         notInitialized = clNI.getConstructor().newInstance();
+        Class<?> clGetters = classLoader.loadClass(Getters.class);
+        getters = clGetters.getConstructor().newInstance();
     }
 
     //@AfterAll
@@ -49,58 +55,77 @@ public class RuntimeTests {
 
     @Test
     public void finalField() throws Exception {
-        String sql = getField("SQL1", replaceSQLExample);
+        String sql = getFieldValue("SQL1", replaceSQLExample);
         assertEquals(getSingleRowValue("SQL1"), sql);
     }
 
     @Test
     public void notFinalField() throws Exception {
-        String sql = getField("SQL2", replaceSQLExample);
+        String sql = getFieldValue("SQL2", replaceSQLExample);
         assertEquals(getSingleRowValue("SQL2"), sql);
     }
 
     @Test
     public void privateNotFinalField() throws Exception {
-        String sql = getField("SQL3", replaceSQLExample);
+        String sql = getFieldValue("SQL3", replaceSQLExample);
         assertEquals(getSingleRowValue("SQL3"), sql);
     }
 
     @Test
     public void privateNotFinalNotInitializedField() throws Exception {
-        String sql = getField("SQL5", replaceSQLExample);
+        String sql = getFieldValue("SQL5", replaceSQLExample);
         assertEquals(getSingleRowValue("SQL5"), sql);
     }
 
     @Test
     public void fieldMarkedByReplaceSqlField() throws Exception {
-        String sql = getField("SQL2", replaceSQLFieldExample);
+        String sql = getFieldValue("SQL2", replaceSQLFieldExample);
         assertEquals(getSingleRowValue("SQL2"), sql);
     }
 
     @Test
     public void notInitializedFieldInTheStart() throws Exception {
-        String sql = getField("SQL1", notInitialized);
+        String sql = getFieldValue("SQL1", notInitialized);
         assertEquals(getSingleRowValue("SQL1"), sql);
     }
 
     @Test
     public void notInitializedFieldInTheMiddle() throws Exception {
-        String sql = getField("SQL3", notInitialized);
+        String sql = getFieldValue("SQL3", notInitialized);
         assertEquals(getSingleRowValue("SQL3"), sql);
     }
 
     @Test
     public void notInitializedFieldInTheEnd() throws Exception {
-        String sql = getField("SQL5", notInitialized);
+        String sql = getFieldValue("SQL5", notInitialized);
         assertEquals(getSingleRowValue("SQL5"), sql);
     }
 
+    @Test
+    public void finalFieldGetter() throws Exception {
+        String sql = getGetterValue("SQL1", getters);
+        assertEquals(getSingleRowValue("SQL1"), sql);
+    }
 
+    @Test
+    public void notFinalFieldGetter() throws Exception {
+        String sql = getGetterValue("SQL2", getters);
+        assertEquals(getSingleRowValue("SQL2"), sql);
+    }
 
-    private String getField(String fieldName, Object instance) throws NoSuchFieldException, IllegalAccessException {
+    private String getFieldValue(String fieldName, Object instance) throws NoSuchFieldException, IllegalAccessException {
         Field field = instance.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
         return (String) field.get(instance);
+    }
+
+    private String getGetterValue(String fieldName, Object instance) throws Exception {
+        Method method = instance.getClass().getDeclaredMethod(
+                "get"
+                        + fieldName.substring(0, 1).toUpperCase()
+                        + fieldName.substring(1));
+        method.setAccessible(true);
+        return (String) method.invoke(instance);
     }
 
     private String getSingleRowValue(String fileName) {

@@ -1,5 +1,6 @@
 package yamert89.snoopy.compile;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,7 +38,7 @@ public class ClassMetadata {
     }
 
     public List<ClassField> getClassFields() {
-        return classFields;
+        return new LinkedList<>(classFields);
     }
 
     @Override

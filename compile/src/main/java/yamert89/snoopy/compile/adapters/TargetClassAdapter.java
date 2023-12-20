@@ -12,7 +12,7 @@ import yamert89.snoopy.compile.meta.Descriptors;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.ASM9;
 
 
 public class TargetClassAdapter extends ClassVisitor {
@@ -35,8 +35,9 @@ public class TargetClassAdapter extends ClassVisitor {
     public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
         log.debug("started analyzing field: {{}}", name);
         Optional<ClassField> optCF = classMetadata.getClassFields().stream().filter(f -> f.getName().equals(name)).findAny();
-        if (optCF.isPresent()) {
-            Object resultVal = access == ACC_PUBLIC + ACC_FINAL ? optCF.get().getNewValue() : value;
+        if (descriptor.equals(Descriptors.STRING) && optCF.isPresent()) {
+            //Object resultVal = access == ACC_PUBLIC + ACC_FINAL ? optCF.get().getNewValue() : value;
+            Object resultVal = optCF.get().getNewValue();
             return super.visitField(access, name, descriptor, signature, resultVal);
         }
         return super.visitField(access, name, descriptor, signature, value);
@@ -47,6 +48,13 @@ public class TargetClassAdapter extends ClassVisitor {
         MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
         if (name.equals(Descriptors.INIT))
             return new InitMethodFieldsAssignAdapter((LinkedList<ClassField>) classMetadata.getClassFields(), className, ASM9, mv);
+
+        Optional<ClassField> optCF = classMetadata.getClassFields()
+                .stream()
+                .filter(f -> f.getName().equals(name.replace("get", ""))).findAny();
+        if (name.startsWith("get") && optCF.isPresent())
+            return new GetterAdapter(optCF.get(), ASM9, mv);
+
         return mv;
     }
 

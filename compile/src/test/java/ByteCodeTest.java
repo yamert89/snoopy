@@ -74,6 +74,8 @@ public class ByteCodeTest {
         );
     }
 
+    //todo add operand counters for init
+
     /*@Test
     public void fieldMarkedByReplaceSqlField() throws IOException {
         List<ClassField> classFields = List.of(
