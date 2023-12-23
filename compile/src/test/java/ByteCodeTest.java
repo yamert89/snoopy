@@ -73,6 +73,7 @@ public class ByteCodeTest {
 
     @Test
     public void notFinalField() throws IOException {
+        System.out.println("notFinal: " + System.nanoTime());
         testFieldsInTheSameClass(
                 REPLACE_SQL_EXAMPLE_CLASS_NAME,
                 new ConstructorFieldsAssignedAdapter(Opcodes.ASM9, "SQL2", new String(readResource("SQL2.sql"), StandardCharsets.UTF_8)),
@@ -120,7 +121,7 @@ public class ByteCodeTest {
     public void calculateInitAssignablesInGetters() throws Exception {
         testFieldsInTheSameClass(
                 GETTERS_CLASS_NAME,
-                new InitCounterAdapter(3),
+                new InitCounterAdapter(2),
                 gettersMetadata
         );
     }
@@ -140,10 +141,10 @@ public class ByteCodeTest {
 
     private void testFieldsInTheSameClass(String className, ClassVisitor cv, ClassMetadata clMetadata) throws IOException {
         File targetFile = createTargetFile(className, clMetadata);
-        var is = new FileInputStream(targetFile);
-        var reader = new ClassReader(is);
-        reader.accept(cv, 0);
-        is.close();
+        try (var is = new FileInputStream(targetFile);) {
+            var reader = new ClassReader(is);
+            reader.accept(cv, 0);
+        }
     }
 
     private File createTargetFile(String fileName, ClassMetadata clMetadata) throws IOException {

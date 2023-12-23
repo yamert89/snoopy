@@ -28,25 +28,22 @@ public class InitMethodFieldsAssignAdapter extends MethodVisitor {
     }
 
     @Override
-    public void visitVarInsn(int opcode, int varIndex) {
-        //if (opcode == ALOAD && varIndex == 0) return;
-        super.visitVarInsn(opcode, varIndex);
-    }
-
-    @Override
     public void visitFieldInsn(int opcode, String owner, String name, String descriptor) {
         if (opcode == PUTFIELD
                 && descriptor.equals(Descriptors.STRING)
                 && !classFields.isEmpty()) {
             ClassField classField = classFields.poll();
 
-            if (!classField.isTarget()) {
-                super.visitLdcInsn(cachedLdcValue);
-                super.visitFieldInsn(opcode, owner, name, descriptor);
-                return;
-            }
-
             while (classField != null && !classField.getName().equals(name)) {
+                if (!classField.isTarget()) {
+                    if (!classField.isInitialized()) {
+                        classField = classFields.poll();
+                        continue;
+                    }
+                    super.visitLdcInsn(cachedLdcValue);
+                    super.visitFieldInsn(opcode, owner, name, descriptor);
+                    return;
+                }
                 super.visitLdcInsn(classField.getNewValue());
                 super.visitFieldInsn(PUTFIELD, owner, classField.getName(), Descriptors.STRING);
                 classField = classFields.poll();

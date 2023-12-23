@@ -16,7 +16,7 @@ public class InitCounterAdapter extends ClassVisitor {
     public InitCounterAdapter(int expected) {
         super(ASM9);
         this.expected = expected;
-        aload0Counter = 0;
+        aload0Counter = -1; //aload0 invokespecial -> aload0
         ldcStringCounter = 0;
         putFieldCounter = 0;
     }
@@ -51,8 +51,8 @@ public class InitCounterAdapter extends ClassVisitor {
     @Override
     public void visitEnd() {
         super.visitEnd();
-        assertEquals(expected, aload0Counter);
-        assertEquals(expected, ldcStringCounter);
-        assertEquals(expected, putFieldCounter);
+        assertEquals(expected, aload0Counter, "Unexpected aload0Counter");
+        assertEquals(expected, ldcStringCounter, "Unexpected ldcStringCounter");
+        assertEquals(expected, putFieldCounter, "Unexpected putFieldCounter");
     }
 }
