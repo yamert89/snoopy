@@ -1,4 +1,4 @@
-package service.fakes;
+package service.adapters;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Adapter for fields marked as {@link yamert89.snoopy.compile.meta.ReplaceSQLField}
+ * Adapter for fields marked as {@link yamert89.snoopy.meta.ReplaceSQLField}
  * */
 public class ConstructorFieldsAssignedAdapter2 extends ClassVisitor {
     private final String expectedValue;

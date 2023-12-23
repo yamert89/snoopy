@@ -1,4 +1,4 @@
-package service.fakes;
+package service.adapters;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -8,7 +8,7 @@ import yamert89.snoopy.compile.meta.Descriptors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Adapter for classes marked as {@link yamert89.snoopy.compile.meta.ReplaceSQL}
+ * Adapter for classes marked as {@link yamert89.snoopy.meta.ReplaceSQL}
  * */
 public class ConstructorFieldsAssignedAdapter extends ClassVisitor {
     private final String fieldName;
