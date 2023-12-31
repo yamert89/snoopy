@@ -4,10 +4,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
-import yamert89.snoopy.compile.ClassField;
-import yamert89.snoopy.compile.ClassMetadata;
-import yamert89.snoopy.compile.ClassScanner;
-import yamert89.snoopy.compile.ResourcesUtil;
+import yamert89.snoopy.compile.*;
 import yamert89.snoopy.compile.adapters.ClassMetadataAdapter;
 
 import java.io.File;
@@ -17,12 +14,12 @@ import java.nio.file.FileSystems;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Order(1)
 public class CompileTest {
     private String dataPath;
+    private static String buildPath;
 
     @BeforeAll
     public static void init() {
@@ -33,7 +30,16 @@ public class CompileTest {
     public void setProps(){
         String s = FileSystems.getDefault().getSeparator();
         String contextPath = new File("").getAbsolutePath();
+        buildPath = System.getenv("snoopy.execPath");
         dataPath = contextPath + "/build/classes/java/test/data/".replace("/", s);
+    }
+
+    @Test
+    public void apiDoesNotThrowException() {
+        assertDoesNotThrow(() -> {
+            ClassModifier classModifier = new DefaultClassModifier();
+            classModifier.modify(buildPath + "/classes/java/test/data", buildPath + "/resources/test");
+        });
     }
 
     @Test

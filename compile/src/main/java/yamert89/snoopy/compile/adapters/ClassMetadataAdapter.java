@@ -5,10 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.ClassField;
 import yamert89.snoopy.compile.ClassMetadata;
-import yamert89.snoopy.compile.ResourcesUtil;
 import yamert89.snoopy.compile.meta.Descriptors;
 
-import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,18 +36,13 @@ public class ClassMetadataAdapter extends ClassVisitor {
 
     @Override
     public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+        boolean fieldIsTargetByClassLevel = false;
         if (annotationVisitor.getPrefixFun() != null) {
             String targetFieldPrefix = annotationVisitor.getPrefixFun().get();
             if (descriptor.equals(Descriptors.STRING) && name.startsWith(targetFieldPrefix))
-                classFields.add(getTargetClassField(name, (String) value));
-            else classFields.add(ClassField.notTargetInstance(name));
-            return super.visitField(access, name, descriptor, signature, value);
+                fieldIsTargetByClassLevel = true;
         }
-        return new SingleFieldAdapter(
-                ASM9,
-                () -> classFields.add(getTargetClassField(name, (String) value)),
-                () -> classFields.add(ClassField.notTargetInstance(name))
-        );
+        return new SingleFieldAdapter(ASM9, value, name, fieldIsTargetByClassLevel, classFields::add);
     }
 
     @Override
@@ -80,25 +73,4 @@ public class ClassMetadataAdapter extends ClassVisitor {
                         : ClassMetadata.targetInstanceWithClassFields(classFields);
     }
 
-    private ClassField getTargetClassField(String name, String value) {
-        File resource = ResourcesUtil.getByName("/" + name + ".sql");
-        if (resource != null) {
-            try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(resource)));
-                StringBuilder strBuilder = new StringBuilder();
-                while (reader.ready()) {
-                    strBuilder.append(reader.readLine());
-                }
-                reader.close();
-                String newValue = strBuilder.toString();
-                log.debug("Field's value \"{}\" will be replace with \"{}\"", value, newValue);
-
-                return new ClassField(name, true, value != null, newValue);
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-                throw new RuntimeException(e);
-            }
-        }
-        throw new RuntimeException(String.format("Resource /%s.sql not found", name));
-    }
 }

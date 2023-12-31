@@ -1,7 +1,4 @@
-import data.Getters;
-import data.NotInitialized;
-import data.ReplaceSQLExample;
-import data.ReplaceSQLFieldExample;
+import data.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -29,6 +26,7 @@ public class RuntimeTests {
     private static Object replaceSQLFieldExample;
     private static Object notInitialized;
     private static Object getters;
+    private static Object otherTypes;
 
     @BeforeAll
     public static void modifyBytecode() throws Exception {
@@ -46,6 +44,8 @@ public class RuntimeTests {
         notInitialized = clNI.getConstructor().newInstance();
         Class<?> clGetters = classLoader.loadClass(Getters.class);
         getters = clGetters.getConstructor().newInstance();
+        Class<?> clOtherTypes = classLoader.loadClass(OtherTypes.class);
+        otherTypes = clOtherTypes.getConstructor().newInstance();
     }
 
     //@AfterAll
@@ -112,6 +112,13 @@ public class RuntimeTests {
         String sql = getGetterValue("SQL2", getters);
         assertEquals(getSingleRowValue("SQL2"), sql);
     }
+
+    @Test
+    public void fieldAnnotationHasHighestPriority() throws Exception {
+        String sql = getGetterValue("SQL1", otherTypes);
+        assertEquals(getSingleRowValue("SQL2"), sql);
+    }
+
 
     private String getFieldValue(String fieldName, Object instance) throws NoSuchFieldException, IllegalAccessException {
         Field field = instance.getClass().getDeclaredField(fieldName);
