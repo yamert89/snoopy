@@ -17,7 +17,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Order(1)
-public class CompileTest {
+public class UnitTest {
     private String dataPath;
     private static String buildPath;
 
@@ -49,7 +49,7 @@ public class CompileTest {
         Set<String> scanResult = scanner.scan();
         String expected = dataPath + "ReplaceSQLExample.class";
         assertTrue(scanResult.contains(expected));
-        assertEquals(6, scanResult.size());
+        assertEquals(7, scanResult.size());
     }
 
     @Test

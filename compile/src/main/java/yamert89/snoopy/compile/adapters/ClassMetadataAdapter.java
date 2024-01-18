@@ -36,11 +36,11 @@ public class ClassMetadataAdapter extends ClassVisitor {
 
     @Override
     public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+        if (!descriptor.equals(Descriptors.STRING)) return super.visitField(access, name, descriptor, signature, value);
         boolean fieldIsTargetByClassLevel = false;
         if (annotationVisitor.getPrefixFun() != null) {
             String targetFieldPrefix = annotationVisitor.getPrefixFun().get();
-            if (descriptor.equals(Descriptors.STRING) && name.startsWith(targetFieldPrefix))
-                fieldIsTargetByClassLevel = true;
+            if (name.startsWith(targetFieldPrefix)) fieldIsTargetByClassLevel = true;
         }
         return new SingleFieldAdapter(ASM9, value, name, fieldIsTargetByClassLevel, classFields::add);
     }

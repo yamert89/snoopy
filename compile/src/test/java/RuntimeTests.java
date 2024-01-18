@@ -115,7 +115,7 @@ public class RuntimeTests {
 
     @Test
     public void fieldAnnotationHasHighestPriority() throws Exception {
-        String sql = getGetterValue("SQL1", otherTypes);
+        String sql = getFieldValue("SQL1", otherTypes);
         assertEquals(getSingleRowValue("SQL2"), sql);
     }
 
