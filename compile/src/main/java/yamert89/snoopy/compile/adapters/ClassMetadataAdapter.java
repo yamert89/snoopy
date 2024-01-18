@@ -47,7 +47,7 @@ public class ClassMetadataAdapter extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-        if (name.equals(Descriptors.INIT) && !classFields.isEmpty() && classFields.stream().anyMatch(ClassField::isInitialized)) {
+        if (name.equals(Descriptors.INIT) && !classFields.isEmpty()) {
             return new MethodVisitor(ASM9) {
                 @Override
                 public void visitFieldInsn(int opcode, String owner, String name, String descriptor) {
