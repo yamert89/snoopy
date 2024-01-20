@@ -1,1 +1,1 @@
-select * from sql2;
+select * from sql2 where col1 = 1 and col2 = 2;

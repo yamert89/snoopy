@@ -7,4 +7,6 @@ public class Descriptors {
     public static final String INIT = "<init>";
     public static final String FIELD_RESOURCE_NAME = "name";
     public static final String FIELD_FILTER = "filter";
+    public static final String CLASS_FIELD_START_WITH = "fieldsStartWith";
+    public static final String CLASS_FILTER = "filter";
 }

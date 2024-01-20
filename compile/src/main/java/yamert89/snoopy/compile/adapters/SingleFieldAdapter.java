@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.ClassField;
 import yamert89.snoopy.compile.ResourcesUtil;
 import yamert89.snoopy.compile.meta.Descriptors;
-import yamert89.snoopy.meta.EmptyFilter;
 import yamert89.snoopy.meta.Filter;
 
 import java.io.*;
@@ -27,14 +26,14 @@ public class SingleFieldAdapter extends FieldVisitor {
 
     private final Logger log = LoggerFactory.getLogger(SingleFieldAdapter.class);
 
-    public SingleFieldAdapter(int api, Object oldValue, String fieldName, boolean isTargetByClassLevel, Consumer<ClassField> addFunc) {
+    public SingleFieldAdapter(int api, Object oldValue, String fieldName, boolean isTargetByClassLevel, Consumer<ClassField> addFunc, Filter filter) {
         super(api);
         this.oldValue = oldValue;
         this.fieldName = fieldName;
         this.isTargetByClassLevel = isTargetByClassLevel;
         this.addFunc = addFunc;
         fieldIsTarget = false;
-        filter = new EmptyFilter();
+        this.filter = filter;
     }
 
     @Override

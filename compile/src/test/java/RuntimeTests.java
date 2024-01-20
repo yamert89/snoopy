@@ -123,11 +123,16 @@ public class RuntimeTests {
     }
 
     @Test
-    public void filterWorks() throws Exception {
+    public void filterOnFieldWorks() throws Exception {
         String sql = getFieldValue("SQL", filters);
         assertEquals("select col1 from table1 where col1 = ? and col2 = ?;", sql);
     }
 
+    @Test
+    public void filterOnClassWorks() throws Exception {
+        String sql = getFieldValue("SQL2", filters);
+        assertEquals("select * from sql2 where col1 = ? and col2 = 2;", sql);
+    }
 
     private String getFieldValue(String fieldName, Object instance) throws NoSuchFieldException, IllegalAccessException {
         Field field = instance.getClass().getDeclaredField(fieldName);

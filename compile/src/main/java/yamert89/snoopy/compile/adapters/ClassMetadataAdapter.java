@@ -15,8 +15,7 @@ import static org.objectweb.asm.Opcodes.PUTFIELD;
 
 public class ClassMetadataAdapter extends ClassVisitor {
     private final List<ClassField> classFields;
-
-    private final ReadReplaceSqlAnnotationAdapter annotationVisitor = new ReadReplaceSqlAnnotationAdapter(Opcodes.ASM9);
+    private final ReadReplaceSqlAnnotationAdapter annotationVisitor;
 
     private final Logger log = LoggerFactory.getLogger(ClassMetadataAdapter.class);
 
@@ -24,6 +23,7 @@ public class ClassMetadataAdapter extends ClassVisitor {
     public ClassMetadataAdapter(int api) {
         super(api);
         classFields = new LinkedList<>();
+        annotationVisitor = new ReadReplaceSqlAnnotationAdapter(Opcodes.ASM9);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ClassMetadataAdapter extends ClassVisitor {
             String targetFieldPrefix = annotationVisitor.getPrefixFun().get();
             if (name.startsWith(targetFieldPrefix)) fieldIsTargetByClassLevel = true;
         }
-        return new SingleFieldAdapter(ASM9, value, name, fieldIsTargetByClassLevel, classFields::add);
+        return new SingleFieldAdapter(ASM9, value, name, fieldIsTargetByClassLevel, classFields::add, annotationVisitor.getClassFilter());
     }
 
     @Override

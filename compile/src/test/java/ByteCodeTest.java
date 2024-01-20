@@ -49,7 +49,7 @@ public class ByteCodeTest {
     public void assign() {
         replaceSQLMetadata = new ClassMetadata("SQL", new LinkedList<>(List.of(
                 new ClassField("SQL1", true, true, "select * from sql1;"),
-                new ClassField("SQL2", true, true, "select * from sql2;"),
+                new ClassField("SQL2", true, true, "select * from sql2 where col1 = 1 and col2 = 2;"),
                 new ClassField("SQL3", true, true, "select * from sql3;"),
                 ClassField.notTargetInstance("regularField"),
                 new ClassField("SQL4", true, true, "select * from sql4;"),
