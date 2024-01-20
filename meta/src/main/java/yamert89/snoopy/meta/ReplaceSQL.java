@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ReplaceSQL {
-    String fieldsStartWith() default "";
+    String fieldsStartWith(); //todo default ?
+
+    Class<? extends Filter> filter() default EmptyFilter.class;
 
 }
