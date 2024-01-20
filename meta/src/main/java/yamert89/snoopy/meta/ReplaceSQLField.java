@@ -9,4 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 public @interface ReplaceSQLField {
     String name() default "";
+
+    Class<? extends Filter> filter() default EmptyFilter.class;
 }
