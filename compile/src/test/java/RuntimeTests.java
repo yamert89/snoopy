@@ -27,6 +27,7 @@ public class RuntimeTests {
     private static Object notInitialized;
     private static Object getters;
     private static Object otherTypes;
+    private static Object filters;
 
     @BeforeAll
     public static void modifyBytecode() throws Exception {
@@ -46,6 +47,8 @@ public class RuntimeTests {
         getters = clGetters.getConstructor().newInstance();
         Class<?> clOtherTypes = classLoader.loadClass(OtherTypes.class);
         otherTypes = clOtherTypes.getConstructor().newInstance();
+        Class<?> clFilters = classLoader.loadClass(Filters.class);
+        filters = clFilters.getConstructor().newInstance();
     }
 
     //@AfterAll
@@ -79,7 +82,7 @@ public class RuntimeTests {
 
     @Test
     public void fieldMarkedByReplaceSqlField() throws Exception {
-        String sql = getFieldValue("SQL2", replaceSQLFieldExample);
+        String sql = getFieldValue("SQL", replaceSQLFieldExample);
         assertEquals(getSingleRowValue("SQL2"), sql);
     }
 
@@ -117,6 +120,12 @@ public class RuntimeTests {
     public void fieldAnnotationHasHighestPriority() throws Exception {
         String sql = getFieldValue("SQL1", otherTypes);
         assertEquals(getSingleRowValue("SQL2"), sql);
+    }
+
+    @Test
+    public void filterWorks() throws Exception {
+        String sql = getFieldValue("SQL", filters);
+        assertEquals("select col1 from table1 where col1 = ? and col2 = ?;", sql);
     }
 
 

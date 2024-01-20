@@ -68,7 +68,7 @@ public class InitMethodFieldsAssignAdapter extends MethodVisitor {
         super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
         if (opcode == INVOKESPECIAL) {
             ClassField classField = classFields.peek();
-            while (classField.isTarget() && !classField.isInitialized()) {
+            while (!classFields.isEmpty() && classField.isTarget() && !classField.isInitialized()) {
                 classFields.remove();
                 initializeField(CLASS_INTERNAL_NAME, classField.getName(), classField.getNewValue());
                 classField = classFields.peek();

@@ -54,5 +54,12 @@ public class ClassMetadata {
         return Objects.hash(isTarget, targetFieldsPrefix, classFields);
     }
 
-
+    @Override
+    public String toString() {
+        return "ClassMetadata{" +
+                "isTarget=" + isTarget +
+                ", targetFieldsPrefix='" + targetFieldsPrefix + '\'' +
+                ", classFields=" + classFields +
+                '}';
+    }
 }

@@ -27,7 +27,7 @@ public class InjectSqlExecutor implements ClassExecutor {
     public void run() {
         try{
             log.debug("execute path: {}", originalPath);
-            var writer = new ClassWriter(reader, 0);
+            var writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
             TargetClassAdapter targetClassAdapter = new TargetClassAdapter(Opcodes.ASM9, writer, classMetadata);
             reader.accept(targetClassAdapter, 0);
             var bytes = writer.toByteArray();

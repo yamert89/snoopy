@@ -3,6 +3,7 @@ package yamert89.snoopy.compile;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.util.CheckClassAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.adapters.TargetClassAdapter;
@@ -33,8 +34,8 @@ public class CopyTargetsClassExecutor implements ClassExecutor {
         try{
             if (originalPath.contains("converted")) return;
             log.debug("execute path: {}", originalPath);
-            var writer = new ClassWriter(reader, 0);
-            TargetClassAdapter targetClassAdapter = new TargetClassAdapter(Opcodes.ASM9, writer, classMetadata);
+            var writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
+            TargetClassAdapter targetClassAdapter = new TargetClassAdapter(Opcodes.ASM9, new CheckClassAdapter(writer), classMetadata);
             reader.accept(targetClassAdapter, 0);
             var bytes = writer.toByteArray();
             var file = new File(originalPath);

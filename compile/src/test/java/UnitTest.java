@@ -49,7 +49,7 @@ public class UnitTest {
         Set<String> scanResult = scanner.scan();
         String expected = dataPath + "ReplaceSQLExample.class";
         assertTrue(scanResult.contains(expected));
-        assertEquals(7, scanResult.size());
+        assertEquals(8, scanResult.size());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class UnitTest {
     @Test
     public void correctMetadataForReplaceSqlFieldAnnotation() throws IOException {
         ClassMetadata expected = ClassMetadata.targetInstanceWithClassFields(List.of(
-                new ClassField("SQL2", true, true, "select * from sql2;"),
+                new ClassField("SQL", true, true, "select * from sql2;"),
                 ClassField.notTargetInstance("regularField")
         ));
         testMetadata("ReplaceSQLFieldExample.class", expected);

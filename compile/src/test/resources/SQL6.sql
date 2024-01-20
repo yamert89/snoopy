@@ -1,0 +1,1 @@
+select col1 from table1 where col1 = 1 and col2 = 2;

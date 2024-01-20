@@ -3,11 +3,14 @@ package yamert89.snoopy.compile.adapters;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.ClassField;
 import yamert89.snoopy.compile.ResourcesUtil;
 import yamert89.snoopy.compile.meta.Descriptors;
+import yamert89.snoopy.meta.EmptyFilter;
+import yamert89.snoopy.meta.Filter;
 
 import java.io.*;
 import java.util.function.Consumer;
@@ -18,6 +21,9 @@ public class SingleFieldAdapter extends FieldVisitor {
     private final String fieldName;
     private final boolean isTargetByClassLevel;
     private final Consumer<ClassField> addFunc;
+    private String resourceName;
+    private Filter filter;
+
 
     private final Logger log = LoggerFactory.getLogger(SingleFieldAdapter.class);
 
@@ -28,6 +34,7 @@ public class SingleFieldAdapter extends FieldVisitor {
         this.isTargetByClassLevel = isTargetByClassLevel;
         this.addFunc = addFunc;
         fieldIsTarget = false;
+        filter = new EmptyFilter();
     }
 
     @Override
@@ -37,11 +44,22 @@ public class SingleFieldAdapter extends FieldVisitor {
             return new AnnotationVisitor(Opcodes.ASM9) {
                 @Override
                 public void visit(String name, Object value) {
-                    String resourceName = fieldName;
-                    if (name.equals("name")) {
-                        resourceName = (String) value;
+                    switch (name) {
+                        case Descriptors.FIELD_RESOURCE_NAME:
+                            resourceName = (String) value;
+                            break;
+                        case Descriptors.FIELD_FILTER:
+                            try {
+                                String filterClassName = ((Type) value).getClassName();
+                                filter = (Filter) getClass().getClassLoader().loadClass(filterClassName)
+                                        .getConstructor().newInstance();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+                        default:
+                            throw new RuntimeException("Unknown annotation parameter");
                     }
-                    addFunc.accept(getTargetClassField(resourceName));
                     super.visit(name, value);
                 }
             };
@@ -52,6 +70,8 @@ public class SingleFieldAdapter extends FieldVisitor {
     @Override
     public void visitEnd() {
         super.visitEnd();
+        if (resourceName == null) resourceName = fieldName;
+        if (fieldIsTarget) addFunc.accept(getTargetClassField(resourceName));
         if (!fieldIsTarget) {
             ClassField cf = isTargetByClassLevel ?
                     getTargetClassField(fieldName)
@@ -71,7 +91,7 @@ public class SingleFieldAdapter extends FieldVisitor {
                     strBuilder.append(reader.readLine());
                 }
                 reader.close();
-                String newValue = strBuilder.toString();
+                String newValue = filter.apply(strBuilder.toString());
                 log.debug("Field's value \"{}\" will be replace with \"{}\"", oldValue, newValue);
 
                 return new ClassField(fieldName, true, oldValue != null, newValue);

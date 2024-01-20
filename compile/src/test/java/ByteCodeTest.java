@@ -153,9 +153,8 @@ public class ByteCodeTest {
         var is = new FileInputStream(classFilePath);
         var reader = new ClassReader(is);
         var writer = new ClassWriter(reader, 0);
-        TargetClassAdapter targetClassAdapter = new TargetClassAdapter(Opcodes.ASM9, writer, clMetadata);
-        ClassVisitor wrapped = new CheckClassAdapter(targetClassAdapter);
-        reader.accept(wrapped, 0);
+        TargetClassAdapter targetClassAdapter = new TargetClassAdapter(Opcodes.ASM9, new CheckClassAdapter(writer), clMetadata);
+        reader.accept(targetClassAdapter, 0);
         var bytes = writer.toByteArray();
         var targetFile = new File(targetStringPath);
         is.close();
