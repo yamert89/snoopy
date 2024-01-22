@@ -1,8 +1,8 @@
 package data;
 
-import yamert89.snoopy.meta.ReplaceSQL;
+import yamert89.snoopy.meta.InjectSQL;
 
-@ReplaceSQL(fieldsStartWith = "SQL")
+@InjectSQL(fieldsStartWith = "SQL")
 public class NotInitialized {
     private String SQL1;
     private String SQL2 = "sql2";

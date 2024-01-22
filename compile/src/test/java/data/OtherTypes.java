@@ -1,21 +1,21 @@
 package data;
 
-import yamert89.snoopy.meta.ReplaceSQL;
-import yamert89.snoopy.meta.ReplaceSQLField;
+import yamert89.snoopy.meta.InjectSQL;
+import yamert89.snoopy.meta.InjectSQLField;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@ReplaceSQL(fieldsStartWith = "SQL")
+@InjectSQL(fieldsStartWith = "SQL")
 public class OtherTypes {
     private List<String> list;
     private Object SQL3;
-    @ReplaceSQLField(name = "SQL1")
+    @InjectSQLField(name = "SQL1")
     private String target;
-    @ReplaceSQLField(name = "SQL2")
+    @InjectSQLField(name = "SQL2")
     private int intVal;
     private long SQL;
-    @ReplaceSQLField(name = "SQL2")
+    @InjectSQLField(name = "SQL2")
     private String SQL1;
 
     public OtherTypes() {

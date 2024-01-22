@@ -1,10 +1,10 @@
 package data;
 
-import yamert89.snoopy.meta.ReplaceSQLField;
+import yamert89.snoopy.meta.InjectSQLField;
 
 public class ReplaceSQLFieldExample {
 
-    @ReplaceSQLField(name = "SQL2")
+    @InjectSQLField(name = "SQL2")
     public final String SQL = "sql2";
     public static final String regularField = "regularField";
 }

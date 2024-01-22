@@ -1,12 +1,12 @@
 package data;
 
-import yamert89.snoopy.meta.ReplaceSQLField;
+import yamert89.snoopy.meta.InjectSQLField;
 
 public class Getters {
     private String regularField;
-    @ReplaceSQLField(name = "SQL1")
+    @InjectSQLField(name = "SQL1")
     private final String SQL1 = "sql1";
-    @ReplaceSQLField(name = "SQL2")
+    @InjectSQLField(name = "SQL2")
     private String SQL2 = "sql2";
 
     public String getRegularField() {

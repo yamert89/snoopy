@@ -4,11 +4,12 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yamert89.snoopy.compile.meta.Descriptors;
+import yamert89.snoopy.meta.InjectSQL;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Adapter for classes marked as {@link yamert89.snoopy.meta.ReplaceSQL}
+ * Adapter for classes marked as {@link InjectSQL}
  * */
 public class ConstructorFieldsAssignedAdapter extends ClassVisitor {
     private final String fieldName;

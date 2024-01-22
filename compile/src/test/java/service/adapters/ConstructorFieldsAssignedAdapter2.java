@@ -5,6 +5,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
 import yamert89.snoopy.compile.meta.Descriptors;
+import yamert89.snoopy.meta.InjectSQLField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Adapter for fields marked as {@link yamert89.snoopy.meta.ReplaceSQLField}
+ * Adapter for fields marked as {@link InjectSQLField}
  * */
 public class ConstructorFieldsAssignedAdapter2 extends ClassVisitor {
     private final String expectedValue;
