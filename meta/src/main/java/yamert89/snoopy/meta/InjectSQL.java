@@ -5,10 +5,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.CLASS)
-public @interface ReplaceSQLField {
-    String name() default "";
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface InjectSQL {
+    String fieldsStartWith(); //todo default ?
 
     Class<? extends Filter> filter() default EmptyFilter.class;
+
 }
