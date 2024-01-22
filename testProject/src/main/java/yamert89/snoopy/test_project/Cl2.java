@@ -1,8 +1,8 @@
 package yamert89.snoopy.test_project;
 
-import yamert89.snoopy.meta.ReplaceSQL;
+import yamert89.snoopy.meta.InjectSQL;
 
-@ReplaceSQL(fieldsStartWith = "rep")
+@InjectSQL(fieldsStartWith = "rep")
 public class Cl2 {
     public final String rep1 = "init";
 }
