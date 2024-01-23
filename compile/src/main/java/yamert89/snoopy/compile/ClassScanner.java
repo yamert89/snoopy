@@ -3,21 +3,22 @@ package yamert89.snoopy.compile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ClassScanner {
     private final String classDir;
-    private final Set<String> classFiles = new HashSet<>();
+    private final List<File> classFiles = new LinkedList<>();
     private final Logger log = LoggerFactory.getLogger(ClassScanner.class);
     public ClassScanner(String classDir) {
         this.classDir = classDir;
     }
 
-    public Set<String> scan() throws IOException {
+    public List<File> scan() throws IOException {
         log.debug("scan in root: {}", classDir);
         collectClasses();
         return classFiles;
@@ -31,10 +32,9 @@ public class ClassScanner {
             }
 
             @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                if (!file.toFile().getName().endsWith(".class")) return FileVisitResult.CONTINUE;
-                String path = file.toFile().getAbsolutePath();
-                classFiles.add(path);
+            public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
+                if (!path.toFile().getName().endsWith(".class")) return FileVisitResult.CONTINUE;
+                classFiles.add(path.toFile());
                 log.debug("found class: {}", path);
                 return FileVisitResult.CONTINUE;
             }

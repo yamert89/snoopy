@@ -1,32 +1,30 @@
 package yamert89.snoopy.compile;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
 
 public class ResourcesUtil {
-    private final String resourcesDir;
+    private final List<File> resources;
     private static ResourcesUtil instance;
 
-    private ResourcesUtil(String resourcesDir) {
-        this.resourcesDir = resourcesDir;
+    private ResourcesUtil(List<File> resources) {
+        this.resources = resources;
     }
 
-    public static ResourcesUtil getInstance(String resourcesDir) {
+    public static ResourcesUtil getInstance(List<File> resources) {
         if (instance == null /*|| !instance.resourcesDir.equals(resourcesDir)*/) {
-            instance = new ResourcesUtil(resourcesDir);
+            instance = new ResourcesUtil(Collections.unmodifiableList(resources));
         }
         return instance;
     }
 
-    public static ResourcesUtil getExcitingInstance() {
-        if (instance == null) throw new IllegalStateException("ResourcesUtil is not initialized");
+    public static ResourcesUtil getInstance() {
+        if (instance == null) throw new RuntimeException("ResourcesUtil not initialized");
         return instance;
     }
 
-    public static File getByName(String name){
-        Path path = Paths.get(instance.resourcesDir + name);
-        return Files.exists(path) ? path.toFile() : null;
+    public File getByName(String name) {
+        return resources.stream().filter(f -> f.getName().equals(name)).findFirst().get();
     }
 }

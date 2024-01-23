@@ -81,7 +81,7 @@ public class SingleFieldAdapter extends FieldVisitor {
     }
 
     private ClassField getTargetClassField(String resourceName) {
-        File resource = ResourcesUtil.getByName("/" + resourceName + ".sql");
+        File resource = ResourcesUtil.getInstance().getByName(resourceName + ".sql");
         if (resource != null) {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(resource)));

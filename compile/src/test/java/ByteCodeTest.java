@@ -22,10 +22,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Order(2)
 public class ByteCodeTest {
@@ -37,9 +39,11 @@ public class ByteCodeTest {
     private static String dataPath;
 
     @BeforeAll
-    public static void init(){
+    public static void init() throws IOException {
         System.out.println("Bytecode tests start...");
-        ResourcesUtil.getInstance(new File("").getAbsolutePath() + "/build/resources/test");
+        String resourcesPath = new File("").getAbsolutePath() + "/build/resources/test";
+        List<File> files = Files.walk(Paths.get(resourcesPath)).map(Path::toFile).collect(Collectors.toList());
+        ResourcesUtil.getInstance(files);
         String s = FileSystems.getDefault().getSeparator();
         String contextPath = new File("").getAbsolutePath();
         dataPath = contextPath + "/build/classes/java/test/data/".replace("/", s);

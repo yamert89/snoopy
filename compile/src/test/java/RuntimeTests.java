@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import service.ClearFolderVisitor;
 import service.ReloadClassLoader;
 import yamert89.snoopy.compile.ClassModifier;
+import yamert89.snoopy.compile.ClassScanner;
 import yamert89.snoopy.compile.DefaultClassModifier;
-import yamert89.snoopy.compile.ResourcesUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +14,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,9 +36,12 @@ public class RuntimeTests {
     public static void modifyBytecode() throws Exception {
         System.out.println("Runtime tests start...");
         buildPath = System.getenv("snoopy.execPath");
-        ResourcesUtil.getInstance(new File("").getAbsolutePath() + "/build/resources/test");
+        String resourcesPath = buildPath + "/resources/test";
+        String classesPath = buildPath + "/classes/java/test/data";
+        List<File> resourceFiles = Files.walk(Paths.get(resourcesPath)).map(Path::toFile).collect(Collectors.toList());
+        List<File> classFiles = new ClassScanner(classesPath).scan();
         ClassModifier classModifier = new DefaultClassModifier();
-        classModifier.modify(buildPath + "/classes/java/test/data", buildPath + "/resources/test");
+        classModifier.modify(classFiles, resourceFiles);
         var classLoader = new ReloadClassLoader();
         Class<?> cl = classLoader.loadClass(ReplaceSQLExample.class);
         replaceSQLExample = cl.getConstructor().newInstance();

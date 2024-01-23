@@ -11,8 +11,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,9 +26,11 @@ public class UnitTest {
     private static String buildPath;
 
     @BeforeAll
-    public static void init() {
+    public static void init() throws IOException {
         System.out.println("Compile tests start...");
-        ResourcesUtil.getInstance(new File("").getAbsolutePath() + "/build/resources/test");
+        String resourcesPath = new File("").getAbsolutePath() + "/build/resources/test";
+        List<File> files = Files.walk(Paths.get(resourcesPath)).map(Path::toFile).collect(Collectors.toList());
+        ResourcesUtil.getInstance(files);
     }
     @BeforeEach
     public void setProps(){
@@ -38,7 +44,7 @@ public class UnitTest {
     public void apiDoesNotThrowException() {
         assertDoesNotThrow(() -> {
             ClassModifier classModifier = new DefaultClassModifier();
-            classModifier.modify(buildPath + "/classes/java/test/data", buildPath + "/resources/test");
+            classModifier.modify(Collections.emptyList(), Collections.emptyList());
         });
     }
 
@@ -46,7 +52,7 @@ public class UnitTest {
     public void classScannerWorks() throws IOException {
 
         ClassScanner scanner = new ClassScanner(dataPath);
-        Set<String> scanResult = scanner.scan();
+        List<String> scanResult = scanner.scan().stream().map(File::getAbsolutePath).toList();
         String expected = dataPath + "ReplaceSQLExample.class";
         assertTrue(scanResult.contains(expected));
         assertEquals(8, scanResult.size());

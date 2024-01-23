@@ -13,30 +13,29 @@ import java.nio.file.Files;
 
 public class InjectSqlExecutor implements ClassExecutor {
     private final ClassReader reader;
-    private final String originalPath;
+    private final File classFile;
     private final ClassMetadata classMetadata;
     private final Logger log = LoggerFactory.getLogger(InjectSqlExecutor.class);
 
-    public InjectSqlExecutor(ClassReader reader, String originalPath, ClassMetadata classMetadata) {
+    public InjectSqlExecutor(ClassReader reader, File classFile, ClassMetadata classMetadata) {
         this.reader = reader;
-        this.originalPath = originalPath;
+        this.classFile = classFile;
         this.classMetadata = classMetadata;
     }
 
     @Override
     public void run() {
         try{
-            log.debug("execute path: {}", originalPath);
+            log.debug("execute file: {}", classFile);
             var writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
             TargetClassAdapter targetClassAdapter = new TargetClassAdapter(Opcodes.ASM9, writer, classMetadata);
             reader.accept(targetClassAdapter, 0);
             var bytes = writer.toByteArray();
-            var file = new File(originalPath);
             //is.close();
-            var path = file.toPath();
+            var path = classFile.toPath();
             Files.delete(path);
             Files.createFile(path);
-            var out = new FileOutputStream(file);
+            var out = new FileOutputStream(classFile);
             out.write(bytes);
             out.close();
             log.debug("saved file {}", path);
