@@ -10,22 +10,25 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ClassScanner {
-    private final String classDir;
-    private final List<File> classFiles = new LinkedList<>();
-    private final Logger log = LoggerFactory.getLogger(ClassScanner.class);
-    public ClassScanner(String classDir) {
-        this.classDir = classDir;
+public class FileScanner {
+    private final String directory;
+    private final String extension;
+    private final List<File> files = new LinkedList<>();
+    private final Logger log = LoggerFactory.getLogger(FileScanner.class);
+
+    public FileScanner(String directory, String extension) {
+        this.directory = directory;
+        this.extension = "." + extension;
     }
 
     public List<File> scan() throws IOException {
-        log.debug("scan in root: {}", classDir);
+        log.debug("scan in root: {}", directory);
         collectClasses();
-        return classFiles;
+        return files;
     }
 
     private void collectClasses() throws IOException {
-        Files.walkFileTree(Paths.get(classDir), new FileVisitor<>() {
+        Files.walkFileTree(Paths.get(directory), new FileVisitor<>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                 return FileVisitResult.CONTINUE;
@@ -33,9 +36,9 @@ public class ClassScanner {
 
             @Override
             public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
-                if (!path.toFile().getName().endsWith(".class")) return FileVisitResult.CONTINUE;
-                classFiles.add(path.toFile());
-                log.debug("found class: {}", path);
+                if (!path.toFile().getName().endsWith(extension)) return FileVisitResult.CONTINUE;
+                files.add(path.toFile());
+                log.debug("file found: {}", path);
                 return FileVisitResult.CONTINUE;
             }
 
