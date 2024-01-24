@@ -5,11 +5,16 @@ import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
 import yamert89.snoopy.compile.ClassModifier;
 import yamert89.snoopy.compile.DefaultClassModifier;
+import yamert89.snoopy.compile.FileScanner;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 public class ModifyClasses extends DefaultTask {
 
     @TaskAction
-    public void execute() {
+    public void execute() throws IOException {
         Project project = getProject();
         SnoopyPluginExtension extension = project.getExtensions().findByType(SnoopyPluginExtension.class);
         String basePackage = extension.getBasePackage().getOrElse("");
@@ -21,6 +26,8 @@ public class ModifyClasses extends DefaultTask {
         System.out.println("Task snoopyCompile started with basePackage: " + basePackage);
         ClassModifier classModifier = new DefaultClassModifier();
 
-        classModifier.modify(classDir, resourcesDir); //todo basePackage not used
+        List<File> classFiles = new FileScanner(classDir, "class").scan();
+        List<File> sqlFiles = new FileScanner(resourcesDir, "sql").scan();
+        classModifier.modify(classFiles, sqlFiles); //todo basePackage not used
     }
 }

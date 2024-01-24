@@ -29,6 +29,9 @@ gradlePlugin {
 publishing.repositories.maven("../../_gradle-plugins-repository")
 
 tasks {
+    test {
+        useJUnitPlatform()
+    }
     jar{
        // duplicatesStrategy = DuplicatesStrategy.WARN
 
