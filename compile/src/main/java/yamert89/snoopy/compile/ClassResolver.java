@@ -1,7 +1,6 @@
 package yamert89.snoopy.compile;
 
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.adapters.ClassMetadataAdapter;
@@ -41,7 +40,7 @@ public final class ClassResolver {
     }
 
     private ClassMetadata getMetadata(ClassReader reader){
-        ClassMetadataAdapter classMetadataAdapter = new ClassMetadataAdapter(Opcodes.ASM9);
+        ClassMetadataAdapter classMetadataAdapter = new ClassMetadataAdapter();
         reader.accept(classMetadataAdapter, 0);
         return classMetadataAdapter.getClassMetadata();
     }

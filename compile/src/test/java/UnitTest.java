@@ -3,7 +3,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.Opcodes;
 import yamert89.snoopy.compile.*;
 import yamert89.snoopy.compile.adapters.ClassMetadataAdapter;
 
@@ -85,7 +84,7 @@ public class UnitTest {
     private void testMetadata(String className, ClassMetadata exceptedMetadata) throws IOException{
         var is = new FileInputStream(dataPath + className);
         var reader = new ClassReader(is);
-        ClassMetadataAdapter classMetadataAdapter = new ClassMetadataAdapter(Opcodes.ASM9);
+        ClassMetadataAdapter classMetadataAdapter = new ClassMetadataAdapter();
         reader.accept(classMetadataAdapter, 0);
         assertEquals(exceptedMetadata, classMetadataAdapter.getClassMetadata());
         is.close();

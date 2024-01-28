@@ -2,7 +2,6 @@ package yamert89.snoopy.compile.adapters;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +12,8 @@ import yamert89.snoopy.meta.Filter;
 
 import java.io.*;
 import java.util.function.Consumer;
+
+import static yamert89.snoopy.compile.Constants.API_VERSION;
 
 public class SingleFieldAdapter extends FieldVisitor {
     private boolean fieldIsTarget;
@@ -26,8 +27,8 @@ public class SingleFieldAdapter extends FieldVisitor {
 
     private final Logger log = LoggerFactory.getLogger(SingleFieldAdapter.class);
 
-    public SingleFieldAdapter(int api, Object oldValue, String fieldName, boolean isTargetByClassLevel, Consumer<ClassField> addFunc, Filter filter) {
-        super(api);
+    public SingleFieldAdapter(Object oldValue, String fieldName, boolean isTargetByClassLevel, Consumer<ClassField> addFunc, Filter filter) {
+        super(API_VERSION);
         this.oldValue = oldValue;
         this.fieldName = fieldName;
         this.isTargetByClassLevel = isTargetByClassLevel;
@@ -40,7 +41,7 @@ public class SingleFieldAdapter extends FieldVisitor {
     public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
         if (descriptor.equals(Descriptors.REPLACE_SQL_FIELD)) {
             fieldIsTarget = true;
-            return new AnnotationVisitor(Opcodes.ASM9) {
+            return new AnnotationVisitor(API_VERSION) {
                 @Override
                 public void visit(String name, Object value) {
                     switch (name) {

@@ -7,14 +7,15 @@ import yamert89.snoopy.compile.meta.Descriptors;
 import java.util.LinkedList;
 
 import static org.objectweb.asm.Opcodes.*;
+import static yamert89.snoopy.compile.Constants.API_VERSION;
 
 public class InitMethodFieldsAssignAdapter extends MethodVisitor {
     private final LinkedList<ClassField> classFields;
     private Object cachedLdcValue;
     private final String CLASS_INTERNAL_NAME;
 
-    protected InitMethodFieldsAssignAdapter(LinkedList<ClassField> classFields, String className, int api, MethodVisitor methodVisitor) {
-        super(api, methodVisitor);
+    protected InitMethodFieldsAssignAdapter(LinkedList<ClassField> classFields, String className, MethodVisitor methodVisitor) {
+        super(API_VERSION, methodVisitor);
         assert !classFields.isEmpty();
         this.classFields = classFields;
         CLASS_INTERNAL_NAME = className;

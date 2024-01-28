@@ -1,6 +1,9 @@
 package yamert89.snoopy.compile.adapters;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.ClassField;
@@ -10,8 +13,8 @@ import yamert89.snoopy.compile.meta.Descriptors;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.objectweb.asm.Opcodes.ASM9;
 import static org.objectweb.asm.Opcodes.PUTFIELD;
+import static yamert89.snoopy.compile.Constants.API_VERSION;
 
 public class ClassMetadataAdapter extends ClassVisitor {
     private final List<ClassField> classFields;
@@ -20,10 +23,10 @@ public class ClassMetadataAdapter extends ClassVisitor {
     private final Logger log = LoggerFactory.getLogger(ClassMetadataAdapter.class);
 
 
-    public ClassMetadataAdapter(int api) {
-        super(api);
+    public ClassMetadataAdapter() {
+        super(API_VERSION);
         classFields = new LinkedList<>();
-        annotationVisitor = new ReadReplaceSqlAnnotationAdapter(Opcodes.ASM9);
+        annotationVisitor = new ReadReplaceSqlAnnotationAdapter();
     }
 
     @Override
@@ -42,13 +45,13 @@ public class ClassMetadataAdapter extends ClassVisitor {
             String targetFieldPrefix = annotationVisitor.getPrefixFun().get();
             if (name.startsWith(targetFieldPrefix)) fieldIsTargetByClassLevel = true;
         }
-        return new SingleFieldAdapter(ASM9, value, name, fieldIsTargetByClassLevel, classFields::add, annotationVisitor.getClassFilter());
+        return new SingleFieldAdapter(value, name, fieldIsTargetByClassLevel, classFields::add, annotationVisitor.getClassFilter());
     }
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         if (name.equals(Descriptors.INIT) && !classFields.isEmpty()) {
-            return new MethodVisitor(ASM9) {
+            return new MethodVisitor(API_VERSION) {
                 @Override
                 public void visitFieldInsn(int opcode, String owner, String name, String descriptor) {
                     if (opcode == PUTFIELD) {

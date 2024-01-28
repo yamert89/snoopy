@@ -12,7 +12,7 @@ import yamert89.snoopy.compile.meta.Descriptors;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import static org.objectweb.asm.Opcodes.ASM9;
+import static yamert89.snoopy.compile.Constants.API_VERSION;
 
 
 public class TargetClassAdapter extends ClassVisitor {
@@ -20,8 +20,8 @@ public class TargetClassAdapter extends ClassVisitor {
     private String className;
     private final Logger log = LoggerFactory.getLogger(TargetClassAdapter.class);
 
-    public TargetClassAdapter(int api, ClassVisitor cv, ClassMetadata classMetadata) {
-        super(api, cv);
+    public TargetClassAdapter(ClassVisitor cv, ClassMetadata classMetadata) {
+        super(API_VERSION, cv);
         this.classMetadata = classMetadata;
     }
 
@@ -47,13 +47,13 @@ public class TargetClassAdapter extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
         if (name.equals(Descriptors.INIT))
-            return new InitMethodFieldsAssignAdapter((LinkedList<ClassField>) classMetadata.getClassFields(), className, ASM9, mv);
+            return new InitMethodFieldsAssignAdapter((LinkedList<ClassField>) classMetadata.getClassFields(), className, mv);
 
         Optional<ClassField> optCF = classMetadata.getClassFields()
                 .stream()
                 .filter(f -> f.getName().equals(name.replace("get", ""))).findAny();
         if (name.startsWith("get") && optCF.isPresent())
-            return new GetterAdapter(optCF.get(), ASM9, mv);
+            return new GetterAdapter(optCF.get(), mv);
 
         return mv;
     }

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.CheckClassAdapter;
 import service.adapters.ConstructorFieldsAssignedAdapter;
 import service.adapters.FieldsCounterAdapter;
@@ -70,7 +69,7 @@ public class ByteCodeTest {
     public void finalField() throws IOException {
         testFieldsInTheSameClass(
                 REPLACE_SQL_EXAMPLE_CLASS_NAME,
-                new ConstructorFieldsAssignedAdapter(Opcodes.ASM9, "SQL1", new String(readResource("SQL1.sql"), StandardCharsets.UTF_8)),
+                new ConstructorFieldsAssignedAdapter("SQL1", new String(readResource("SQL1.sql"), StandardCharsets.UTF_8)),
                 replaceSQLMetadata
         );
     }
@@ -80,7 +79,7 @@ public class ByteCodeTest {
         System.out.println("notFinal: " + System.nanoTime());
         testFieldsInTheSameClass(
                 REPLACE_SQL_EXAMPLE_CLASS_NAME,
-                new ConstructorFieldsAssignedAdapter(Opcodes.ASM9, "SQL2", new String(readResource("SQL2.sql"), StandardCharsets.UTF_8)),
+                new ConstructorFieldsAssignedAdapter("SQL2", new String(readResource("SQL2.sql"), StandardCharsets.UTF_8)),
                 replaceSQLMetadata
         );
     }
@@ -89,7 +88,7 @@ public class ByteCodeTest {
     public void privateNotFinalField() throws IOException {
         testFieldsInTheSameClass(
                 REPLACE_SQL_EXAMPLE_CLASS_NAME,
-                new ConstructorFieldsAssignedAdapter(Opcodes.ASM9, "SQL3", new String(readResource("SQL3.sql"), StandardCharsets.UTF_8)),
+                new ConstructorFieldsAssignedAdapter("SQL3", new String(readResource("SQL3.sql"), StandardCharsets.UTF_8)),
                 replaceSQLMetadata
         );
     }
@@ -157,7 +156,7 @@ public class ByteCodeTest {
         var is = new FileInputStream(classFilePath);
         var reader = new ClassReader(is);
         var writer = new ClassWriter(reader, 0);
-        TargetClassAdapter targetClassAdapter = new TargetClassAdapter(Opcodes.ASM9, new CheckClassAdapter(writer), clMetadata);
+        TargetClassAdapter targetClassAdapter = new TargetClassAdapter(new CheckClassAdapter(writer), clMetadata);
         reader.accept(targetClassAdapter, 0);
         var bytes = writer.toByteArray();
         var targetFile = new File(targetStringPath);

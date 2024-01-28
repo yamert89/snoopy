@@ -3,7 +3,6 @@ package service.adapters;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.Opcodes;
 import yamert89.snoopy.compile.meta.Descriptors;
 import yamert89.snoopy.meta.InjectSQLField;
 
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static yamert89.snoopy.compile.Constants.API_VERSION;
 
 /**
  * Adapter for fields marked as {@link InjectSQLField}
@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ConstructorFieldsAssignedAdapter2 extends ClassVisitor {
     private final String expectedValue;
 
-    public ConstructorFieldsAssignedAdapter2(int api, String expectedValue) {
-        super(api);
+    public ConstructorFieldsAssignedAdapter2(String expectedValue) {
+        super(API_VERSION);
         this.expectedValue = expectedValue;
     }
 
@@ -29,7 +29,7 @@ public class ConstructorFieldsAssignedAdapter2 extends ClassVisitor {
         if (fieldNames.contains(name)){
             assertEquals(expectedValue, value);
         }
-        return new FieldVisitor(Opcodes.ASM9) {
+        return new FieldVisitor(API_VERSION) {
             @Override
             public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
                 assertEquals(Descriptors.REPLACE_SQL_FIELD, descriptor);

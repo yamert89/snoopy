@@ -7,6 +7,7 @@ import yamert89.snoopy.compile.meta.Descriptors;
 import yamert89.snoopy.meta.InjectSQL;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static yamert89.snoopy.compile.Constants.API_VERSION;
 
 /**
  * Adapter for classes marked as {@link InjectSQL}
@@ -15,8 +16,8 @@ public class ConstructorFieldsAssignedAdapter extends ClassVisitor {
     private final String fieldName;
     private final String expectedValue;
 
-    public ConstructorFieldsAssignedAdapter(int api, String fieldName, String expectedValue) {
-        super(api);
+    public ConstructorFieldsAssignedAdapter(String fieldName, String expectedValue) {
+        super(API_VERSION);
         this.fieldName = fieldName;
         this.expectedValue = expectedValue;
     }
@@ -24,7 +25,7 @@ public class ConstructorFieldsAssignedAdapter extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         if (name.equals(Descriptors.INIT)){
-            return new MethodVisitor(Opcodes.ASM9) {
+            return new MethodVisitor(API_VERSION) {
                 private String sqlValue;
                 @Override
                 public void visitLdcInsn(Object value) {

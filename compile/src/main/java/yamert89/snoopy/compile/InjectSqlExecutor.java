@@ -2,7 +2,6 @@ package yamert89.snoopy.compile;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.adapters.TargetClassAdapter;
@@ -28,7 +27,7 @@ public class InjectSqlExecutor implements ClassExecutor {
         try{
             log.debug("execute file: {}", classFile);
             var writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
-            TargetClassAdapter targetClassAdapter = new TargetClassAdapter(Opcodes.ASM9, writer, classMetadata);
+            TargetClassAdapter targetClassAdapter = new TargetClassAdapter(writer, classMetadata);
             reader.accept(targetClassAdapter, 0);
             var bytes = writer.toByteArray();
             //is.close();

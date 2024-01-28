@@ -8,12 +8,14 @@ import yamert89.snoopy.meta.Filter;
 
 import java.util.function.Supplier;
 
+import static yamert89.snoopy.compile.Constants.API_VERSION;
+
 public class ReadReplaceSqlAnnotationAdapter extends AnnotationVisitor {
     private Supplier<String> prefixFun;
     private Filter classFilter;
 
-    public ReadReplaceSqlAnnotationAdapter(int api) {
-        super(api);
+    public ReadReplaceSqlAnnotationAdapter() {
+        super(API_VERSION);
         classFilter = new EmptyFilter();
     }
 
