@@ -13,11 +13,6 @@ public final class ClassResolver {
     private final File classFile;
     private final Logger log = LoggerFactory.getLogger(ClassResolver.class);
 
-   /* public ClassResolver(String classFilePath, ClassExecutorFactory classExecutorFactory) {
-        this.classExecutorFactory = classExecutorFactory;
-        this.classFile = classFilePath;
-    }*/
-
     public ClassResolver(File classFile) {
         this.classFile = classFile;
         classExecutorFactory = new InjectSqlClassExecutorFactory();

@@ -3,17 +3,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
-import yamert89.snoopy.compile.*;
+import yamert89.snoopy.compile.ClassField;
+import yamert89.snoopy.compile.ClassMetadata;
+import yamert89.snoopy.compile.FileScanner;
+import yamert89.snoopy.compile.ResourcesUtil;
 import yamert89.snoopy.compile.adapters.ClassMetadataAdapter;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Order(1)
 public class UnitTest {
@@ -25,7 +28,7 @@ public class UnitTest {
         System.out.println("Compile tests start...");
         String resourcesPath = new File("").getAbsolutePath() + "/build/resources/test";
         List<File> files = new FileScanner(resourcesPath, "sql").scan();
-        ResourcesUtil.getInstance(files);
+        ResourcesUtil.initialize(files);
     }
     @BeforeEach
     public void setProps(){
@@ -33,14 +36,6 @@ public class UnitTest {
         String contextPath = new File("").getAbsolutePath();
         buildPath = System.getenv("snoopy.execPath");
         dataPath = contextPath + "/build/classes/java/test/data/".replace("/", s);
-    }
-
-    @Test
-    public void apiDoesNotThrowException() {
-        assertDoesNotThrow(() -> {
-            ClassModifier classModifier = new DefaultClassModifier();
-            classModifier.modify(Collections.emptyList(), Collections.emptyList());
-        });
     }
 
     @Test

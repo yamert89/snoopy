@@ -18,9 +18,4 @@ public class GetterAdapter extends MethodVisitor {
         super.visitLdcInsn(classField.getNewValue());
     }
 
-    /*@Override
-    public void visitFieldInsn(int opcode, String owner, String name, String descriptor) {
-        if (opcode == GETFIELD)
-        super.visitFieldInsn(opcode, owner, name, descriptor);
-    }*/
 }

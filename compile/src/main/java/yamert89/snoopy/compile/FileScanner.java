@@ -23,11 +23,11 @@ public class FileScanner {
 
     public List<File> scan() throws IOException {
         log.debug("scan in root: {}", directory);
-        collectClasses();
+        collectFiles();
         return files;
     }
 
-    private void collectClasses() throws IOException {
+    private void collectFiles() throws IOException {
         Files.walkFileTree(Paths.get(directory), new FileVisitor<>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {

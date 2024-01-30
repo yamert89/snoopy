@@ -15,12 +15,6 @@ public class ClassField {
         this.newValue = newValue;
     }
 
-    public ClassField(String name) {
-        this.name = name;
-        isTarget = true;
-        newValue = null;
-    }
-
     public static ClassField notTargetInstance(String name) {
         return new ClassField(name, false, false, null);
     }

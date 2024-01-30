@@ -7,7 +7,7 @@ public class DefaultClassModifier implements ClassModifier {
 
     @Override
     public void modify(List<File> classes, List<File> resources) {
-        ResourcesUtil.getInstance(resources);
+        ResourcesUtil.initialize(resources);
         classes.forEach((file) -> new ClassResolver(file).resolve());
     }
 }

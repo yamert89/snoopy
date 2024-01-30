@@ -42,7 +42,7 @@ public class ByteCodeTest {
         System.out.println("Bytecode tests start...");
         String resourcesPath = new File("").getAbsolutePath() + "/build/resources/test";
         List<File> files = Files.walk(Paths.get(resourcesPath)).map(Path::toFile).collect(Collectors.toList());
-        ResourcesUtil.getInstance(files);
+        ResourcesUtil.initialize(files);
         String s = FileSystems.getDefault().getSeparator();
         String contextPath = new File("").getAbsolutePath();
         dataPath = contextPath + "/build/classes/java/test/data/".replace("/", s);

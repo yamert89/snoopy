@@ -30,7 +30,6 @@ public class InjectSqlExecutor implements ClassExecutor {
             TargetClassAdapter targetClassAdapter = new TargetClassAdapter(writer, classMetadata);
             reader.accept(targetClassAdapter, 0);
             var bytes = writer.toByteArray();
-            //is.close();
             var path = classFile.toPath();
             Files.delete(path);
             Files.createFile(path);

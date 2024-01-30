@@ -36,7 +36,6 @@ public class TargetClassAdapter extends ClassVisitor {
         log.debug("started analyzing field: {{}}", name);
         Optional<ClassField> optCF = classMetadata.getClassFields().stream().filter(f -> f.getName().equals(name)).findAny();
         if (descriptor.equals(Descriptors.STRING) && optCF.isPresent()) {
-            //Object resultVal = access == ACC_PUBLIC + ACC_FINAL ? optCF.get().getNewValue() : value;
             Object resultVal = optCF.get().getNewValue();
             return super.visitField(access, name, descriptor, signature, resultVal);
         }

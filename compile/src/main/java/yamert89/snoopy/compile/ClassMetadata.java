@@ -33,10 +33,6 @@ public class ClassMetadata {
         return isTarget;
     }
 
-    public String getTargetFieldsPrefix() {
-        return targetFieldsPrefix;
-    }
-
     public List<ClassField> getClassFields() {
         return new LinkedList<>(classFields);
     }

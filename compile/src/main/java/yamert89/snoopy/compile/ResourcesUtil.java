@@ -1,5 +1,8 @@
 package yamert89.snoopy.compile;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -9,16 +12,15 @@ import java.util.Optional;
 public class ResourcesUtil {
     private final List<File> resources;
     private static ResourcesUtil instance;
+    private final Logger log = LoggerFactory.getLogger(ResourcesUtil.class);
 
     private ResourcesUtil(List<File> resources) {
         this.resources = resources;
+        log.debug("ResourcesUtil was initialized with files: " + resources);
     }
 
-    public static ResourcesUtil getInstance(List<File> resources) {
-        if (instance == null /*|| !instance.resourcesDir.equals(resourcesDir)*/) {
-            instance = new ResourcesUtil(Collections.unmodifiableList(resources));
-        }
-        return instance;
+    public static void initialize(List<File> resources) { //TODO DI ?
+        instance = new ResourcesUtil(Collections.unmodifiableList(resources));
     }
 
     public static ResourcesUtil getInstance() {

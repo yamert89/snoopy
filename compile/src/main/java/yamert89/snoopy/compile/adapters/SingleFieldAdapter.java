@@ -23,8 +23,6 @@ public class SingleFieldAdapter extends FieldVisitor {
     private final Consumer<ClassField> addFunc;
     private String resourceName;
     private Filter filter;
-
-
     private final Logger log = LoggerFactory.getLogger(SingleFieldAdapter.class);
 
     public SingleFieldAdapter(Object oldValue, String fieldName, boolean isTargetByClassLevel, Consumer<ClassField> addFunc, Filter filter) {

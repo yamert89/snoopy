@@ -4,8 +4,6 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import yamert89.snoopy.compile.ClassField;
 import yamert89.snoopy.compile.ClassMetadata;
 import yamert89.snoopy.compile.meta.Descriptors;
@@ -19,9 +17,6 @@ import static yamert89.snoopy.compile.Constants.API_VERSION;
 public class ClassMetadataAdapter extends ClassVisitor {
     private final List<ClassField> classFields;
     private final ReadReplaceSqlAnnotationAdapter annotationVisitor;
-
-    private final Logger log = LoggerFactory.getLogger(ClassMetadataAdapter.class);
-
 
     public ClassMetadataAdapter() {
         super(API_VERSION);
