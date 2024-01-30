@@ -24,6 +24,8 @@ public class ModifyClasses extends DefaultTask {
         classDir = extension.getClassDir().isPresent() ? classDir : (baseDir + "/" + classDir);
         resourcesDir = extension.getResourcesDir().isPresent() ? resourcesDir : (baseDir + "/" + resourcesDir);
         System.out.println("Task snoopyCompile started with basePackage: " + basePackage);
+        System.out.println("classDir: " + classDir);
+        System.out.println("resourcesDir: " + resourcesDir);
         ClassModifier classModifier = new DefaultClassModifier();
 
         List<File> classFiles = new FileScanner(classDir, "class").scan();
