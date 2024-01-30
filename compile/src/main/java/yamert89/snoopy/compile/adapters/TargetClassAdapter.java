@@ -49,9 +49,10 @@ public class TargetClassAdapter extends ClassVisitor {
         if (name.equals(Descriptors.INIT))
             return new InitMethodFieldsAssignAdapter((LinkedList<ClassField>) classMetadata.getClassFields(), className, mv);
 
+        String fieldName = name.replace("get", "");
         Optional<ClassField> optCF = classMetadata.getClassFields()
                 .stream()
-                .filter(f -> f.getName().equals(name.replace("get", ""))).findAny();
+                .filter(f -> f.getName().equalsIgnoreCase(fieldName)).findAny(); //TODO fields with similar names (getField | getfield)
         if (name.startsWith("get") && optCF.isPresent())
             return new GetterAdapter(optCF.get(), mv);
 

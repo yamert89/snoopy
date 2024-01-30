@@ -1,10 +1,12 @@
 package data;
 
+import yamert89.snoopy.meta.InjectSQL;
 import yamert89.snoopy.meta.InjectSQLField;
 
+@InjectSQL(fieldsStartWith = "SQL")
 public class Getters {
     private String regularField;
-    @InjectSQLField(name = "SQL1")
+
     private final String SQL1 = "sql1";
     @InjectSQLField(name = "SQL2")
     private String SQL2 = "sql2";

@@ -3,6 +3,8 @@ package yamert89.snoopy.compile;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class ResourcesUtil {
     private final List<File> resources;
@@ -25,6 +27,9 @@ public class ResourcesUtil {
     }
 
     public File getByName(String name) {
-        return resources.stream().filter(f -> f.getName().equals(name)).findFirst().get();
+        Optional<File> file = resources.stream().filter(f -> f.getName().equals(name)).findFirst();
+        if (file.isEmpty()) throw new NoSuchElementException(String.format("File %s not found in %s", name, resources));
+
+        return file.get();
     }
 }
