@@ -4,5 +4,9 @@ import yamert89.snoopy.meta.InjectSQL;
 
 @InjectSQL(fieldsStartWith = "rep")
 public class Cl2 {
-    public final String rep1 = "init";
+    private final String rep1 = "init";
+
+    public String getRep1() {
+        return rep1;
+    }
 }

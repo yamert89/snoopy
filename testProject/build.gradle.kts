@@ -10,7 +10,7 @@ repositories {
     }
 }
 snoopy{
-    basePackage = "yamert89/snoopy/test_project"
+
 }
 
 dependencies {
@@ -26,13 +26,13 @@ tasks{
         useJUnitPlatform()
     }
     snoopyCompile {
-        //dependsOn(classes)
+        dependsOn(classes)
         doFirst { println("snoopy started...") }
     }
 
     create<JavaExec>("runApp") {
         classpath = sourceSets.main.get().runtimeClasspath
-        mainClass = "yamert89.snoopy.Main"
+        mainClass = "yamert89.snoopy.test_project.Main"
         dependsOn(snoopyCompile)
     }
 
