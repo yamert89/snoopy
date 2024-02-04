@@ -1,7 +1,6 @@
 rootProject.name = "snoopy"
 include("gradle_plugin")
 include("compile")
-include("testProject")
 include("runtime")
 
 pluginManagement {
