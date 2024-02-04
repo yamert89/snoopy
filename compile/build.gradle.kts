@@ -26,16 +26,7 @@ dependencies {
 
 }
 
-publishing{
-    repositories{
-        maven("../../_gradle-plugins-repository")
-    }
-    publications {
-        create<MavenPublication>("com"){
-            artifact(tasks.jar)
-        }
-    }
-}
+publishing.repositories.maven("../../_gradle-plugins-repository")
 
 val jarName = "snoopy_compile.jar"
 
