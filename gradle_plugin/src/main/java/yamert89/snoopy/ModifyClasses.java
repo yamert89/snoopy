@@ -17,19 +17,18 @@ public class ModifyClasses extends DefaultTask {
     public void execute() throws IOException {
         Project project = getProject();
         SnoopyPluginExtension extension = project.getExtensions().findByType(SnoopyPluginExtension.class);
-        String basePackage = extension.getBasePackage().getOrElse("");
+        if (extension == null) throw new IllegalStateException("SnoopyPluginExtension not found");
         String classDir = extension.getClassDir().getOrElse("classes/java/main");
         String resourcesDir = extension.getResourcesDir().getOrElse("resources/main");
         String baseDir = project.getLayout().getBuildDirectory().getAsFile().get().getPath();
         classDir = extension.getClassDir().isPresent() ? classDir : (baseDir + "/" + classDir);
         resourcesDir = extension.getResourcesDir().isPresent() ? resourcesDir : (baseDir + "/" + resourcesDir);
-        System.out.println("Task snoopyCompile started with basePackage: " + basePackage);
         System.out.println("classDir: " + classDir);
         System.out.println("resourcesDir: " + resourcesDir);
         ClassModifier classModifier = new DefaultClassModifier();
 
         List<File> classFiles = new FileScanner(classDir, "class").scan();
         List<File> sqlFiles = new FileScanner(resourcesDir, "sql").scan();
-        classModifier.modify(classFiles, sqlFiles); //todo basePackage not used
+        classModifier.modify(classFiles, sqlFiles);
     }
 }
