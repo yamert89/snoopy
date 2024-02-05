@@ -26,6 +26,10 @@ dependencies {
 
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
 publishing.repositories.maven("../../_gradle-plugins-repository")
 
 var jarName = "snoopy_compile.jar"
@@ -65,7 +69,5 @@ tasks{
             }
         }
         dependsOn("jar")
-
-
     }
 }

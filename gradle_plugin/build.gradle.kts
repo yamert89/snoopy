@@ -18,6 +18,10 @@ dependencies {
     compileOnly(project(":compile"))
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
 gradlePlugin {
     plugins {
         create("sgp") {
