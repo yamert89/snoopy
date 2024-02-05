@@ -1,6 +1,6 @@
 package data;
 
-import yamert89.snoopy.meta.InjectSQLField;
+import com.github.yamert89.snoopy.meta.InjectSQLField;
 
 public class ReplaceSQLFieldExample {
 

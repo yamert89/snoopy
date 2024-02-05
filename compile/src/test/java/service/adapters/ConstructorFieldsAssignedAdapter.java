@@ -1,13 +1,13 @@
 package service.adapters;
 
+import com.github.yamert89.snoopy.compile.meta.Descriptors;
+import com.github.yamert89.snoopy.meta.InjectSQL;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yamert89.snoopy.compile.meta.Descriptors;
-import yamert89.snoopy.meta.InjectSQL;
 
+import static com.github.yamert89.snoopy.compile.Constants.API_VERSION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static yamert89.snoopy.compile.Constants.API_VERSION;
 
 /**
  * Adapter for classes marked as {@link InjectSQL}

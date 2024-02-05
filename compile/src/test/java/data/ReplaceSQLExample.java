@@ -1,6 +1,6 @@
 package data;
 
-import yamert89.snoopy.meta.InjectSQL;
+import com.github.yamert89.snoopy.meta.InjectSQL;
 
 @InjectSQL(fieldsStartWith = "SQL")
 public class ReplaceSQLExample {

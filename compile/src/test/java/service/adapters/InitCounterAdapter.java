@@ -1,8 +1,8 @@
 package service.adapters;
 
+import com.github.yamert89.snoopy.compile.meta.Descriptors;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
-import yamert89.snoopy.compile.meta.Descriptors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.objectweb.asm.Opcodes.*;

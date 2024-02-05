@@ -1,3 +1,7 @@
+import com.github.yamert89.snoopy.compile.ClassField;
+import com.github.yamert89.snoopy.compile.ClassMetadata;
+import com.github.yamert89.snoopy.compile.ResourcesUtil;
+import com.github.yamert89.snoopy.compile.adapters.TargetClassAdapter;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -9,10 +13,6 @@ import org.objectweb.asm.util.CheckClassAdapter;
 import service.adapters.ConstructorFieldsAssignedAdapter;
 import service.adapters.FieldsCounterAdapter;
 import service.adapters.InitCounterAdapter;
-import yamert89.snoopy.compile.ClassField;
-import yamert89.snoopy.compile.ClassMetadata;
-import yamert89.snoopy.compile.ResourcesUtil;
-import yamert89.snoopy.compile.adapters.TargetClassAdapter;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,6 +1,6 @@
 package service;
 
-import yamert89.snoopy.meta.Filter;
+import com.github.yamert89.snoopy.meta.Filter;
 
 public class TestFilter2 implements Filter {
     @Override

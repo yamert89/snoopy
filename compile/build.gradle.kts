@@ -28,7 +28,7 @@ dependencies {
 
 publishing.repositories.maven("../../_gradle-plugins-repository")
 
-val jarName = "snoopy_compile.jar"
+var jarName = "snoopy_compile.jar"
 
 tasks{
     test {
@@ -43,20 +43,29 @@ tasks{
     }
 
     jar{
+        doLast {
+            jarName = archiveFileName.get()
+            println("jar_name:$jarName")
+        }
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        archiveFileName.set(jarName)
-
         from(arrayOf(
             configurations.compileClasspath.get().files.map{ if(it.isDirectory) it else zipTree(it)},
         ))
     }
 
     register("copyJar"){
-        dependsOn("jar")
-        delete("$rootDir/snoopy_gradle_plugin/libs/$jarName")
-        copy{
-            from("$buildDir/libs/$jarName")
-            into("$rootDir/snoopy_gradle_plugin/libs/")
+        doFirst {
+            val gp = rootProject.project("gradle_plugin").projectDir
+            println("root: ${gp}/libs/$jarName")
+            println("${layout.buildDirectory.get().asFile.path}/libs/$jarName")
+            delete("${gp}/libs/$jarName")
+            copy {
+                from("${layout.buildDirectory.get().asFile.path}/libs/$jarName")
+                into("$gp/libs/")
+            }
         }
+        dependsOn("jar")
+
+
     }
 }

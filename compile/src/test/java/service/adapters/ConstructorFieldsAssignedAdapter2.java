@@ -1,16 +1,16 @@
 package service.adapters;
 
+import com.github.yamert89.snoopy.compile.meta.Descriptors;
+import com.github.yamert89.snoopy.meta.InjectSQLField;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
-import yamert89.snoopy.compile.meta.Descriptors;
-import yamert89.snoopy.meta.InjectSQLField;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.yamert89.snoopy.compile.Constants.API_VERSION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static yamert89.snoopy.compile.Constants.API_VERSION;
 
 /**
  * Adapter for fields marked as {@link InjectSQLField}

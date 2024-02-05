@@ -1,12 +1,12 @@
+import com.github.yamert89.snoopy.compile.ClassModifier;
+import com.github.yamert89.snoopy.compile.DefaultClassModifier;
+import com.github.yamert89.snoopy.compile.FileScanner;
 import data.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import service.ClearFolderVisitor;
 import service.ReloadClassLoader;
-import yamert89.snoopy.compile.ClassModifier;
-import yamert89.snoopy.compile.DefaultClassModifier;
-import yamert89.snoopy.compile.FileScanner;
 
 import java.io.File;
 import java.io.IOException;

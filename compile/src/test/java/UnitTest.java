@@ -1,13 +1,13 @@
+import com.github.yamert89.snoopy.compile.ClassField;
+import com.github.yamert89.snoopy.compile.ClassMetadata;
+import com.github.yamert89.snoopy.compile.FileScanner;
+import com.github.yamert89.snoopy.compile.ResourcesUtil;
+import com.github.yamert89.snoopy.compile.adapters.ClassMetadataAdapter;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
-import yamert89.snoopy.compile.ClassField;
-import yamert89.snoopy.compile.ClassMetadata;
-import yamert89.snoopy.compile.FileScanner;
-import yamert89.snoopy.compile.ResourcesUtil;
-import yamert89.snoopy.compile.adapters.ClassMetadataAdapter;
 
 import java.io.File;
 import java.io.FileInputStream;

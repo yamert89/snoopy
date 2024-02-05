@@ -1,7 +1,7 @@
 package data;
 
-import yamert89.snoopy.meta.InjectSQL;
-import yamert89.snoopy.meta.InjectSQLField;
+import com.github.yamert89.snoopy.meta.InjectSQL;
+import com.github.yamert89.snoopy.meta.InjectSQLField;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package data;
 
 
-import yamert89.snoopy.runtime.meta.Required;
+import com.github.yamert89.snoopy.runtime.meta.Required;
 
 public class SMapper {
 
