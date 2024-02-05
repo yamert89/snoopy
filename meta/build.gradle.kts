@@ -2,7 +2,7 @@ plugins {
     id("java")
 }
 
-group = "yamert89.snoopy"
+group = "com.github.yamert89.snoopy"
 version = "1.0-SNAPSHOT"
 
 repositories {

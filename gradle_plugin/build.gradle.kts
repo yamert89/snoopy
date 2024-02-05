@@ -5,7 +5,7 @@ plugins {
 }
 
 version = "1.0"
-group = "yamert89.snoopy"
+group = "com.github.yamert89.snoopy"
 
 repositories {
     mavenCentral()
