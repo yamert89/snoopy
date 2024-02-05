@@ -2,17 +2,23 @@ rootProject.name = "snoopy"
 include("gradle_plugin")
 include("compile")
 include("runtime")
+include("meta")
 
 pluginManagement {
-    repositories.gradlePluginPortal()
 
-    repositories.maven("../_gradle-plugins-repository")
+    repositories {
+        gradlePluginPortal()
+        maven("../_gradle-plugins-repository")
+    }
+
     plugins {
         id("yamert89.snoopy") version "1.0"
     }
 }
 
 dependencyResolutionManagement {
-    repositories.mavenCentral()
+    repositories {
+        mavenCentral()
+        maven("https://jitpack.io")
+    }
 }
-include("meta")
