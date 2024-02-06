@@ -25,7 +25,7 @@ java {
 gradlePlugin {
     plugins {
         create("sgp") {
-            id = "yamert89.snoopy"
+            id = "com.github.yamert89.snoopy"
             implementationClass = "com.github.yamert89.snoopy.SnoopyPlugin"
         }
     }
