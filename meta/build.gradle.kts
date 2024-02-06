@@ -19,6 +19,18 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
 }
 
+publishing {
+    repositories {
+        maven(project.ext.get("localRepository")!!)
+        maven("https://jitpack.io")
+    }
+    publications {
+        create<MavenPublication>("meta") {
+            from(components["java"])
+        }
+    }
+}
+
 tasks.test {
     useJUnitPlatform()
 }

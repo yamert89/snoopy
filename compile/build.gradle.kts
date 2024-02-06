@@ -30,7 +30,17 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
 }
 
-publishing.repositories.maven("../../_gradle-plugins-repository")
+publishing {
+    repositories {
+        maven(project.ext.get("localRepository")!!)
+        maven("https://jitpack.io")
+    }
+    publications {
+        create<MavenPublication>("compile") {
+            from(components["java"])
+        }
+    }
+}
 
 var jarName = "snoopy_compile.jar"
 
@@ -47,27 +57,18 @@ tasks{
     }
 
     jar{
-        doLast {
-            jarName = archiveFileName.get()
-            println("jar_name:$jarName")
-        }
+        archiveFileName = jarName
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         from(arrayOf(
             configurations.compileClasspath.get().files.map{ if(it.isDirectory) it else zipTree(it)},
         ))
-    }
-
-    register("copyJar"){
-        doFirst {
+        doLast {
             val gp = rootProject.project("gradle_plugin").projectDir
-            println("root: ${gp}/libs/$jarName")
-            println("${layout.buildDirectory.get().asFile.path}/libs/$jarName")
             delete("${gp}/libs/$jarName")
             copy {
                 from("${layout.buildDirectory.get().asFile.path}/libs/$jarName")
                 into("$gp/libs/")
             }
         }
-        dependsOn("jar")
     }
 }

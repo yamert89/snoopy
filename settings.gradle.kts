@@ -8,7 +8,8 @@ pluginManagement {
 
     repositories {
         gradlePluginPortal()
-        maven("../_gradle-plugins-repository")
+        maven("../local_repository")
+        maven("https://jitpack.io")
     }
 
     plugins {
@@ -19,6 +20,7 @@ pluginManagement {
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
-        maven("https://jitpack.io")
+        //maven("https://jitpack.io")
+        //maven("../local_repository")
     }
 }

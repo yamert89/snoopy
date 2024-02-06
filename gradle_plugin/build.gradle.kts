@@ -30,23 +30,21 @@ gradlePlugin {
         }
     }
 }
-publishing.repositories.maven("../../_gradle-plugins-repository")
+publishing {
+    repositories {
+        maven(project.ext.get("localRepository")!!)
+        maven("https://jitpack.io")
+    }
+}
 
 tasks {
     test {
         useJUnitPlatform()
     }
     jar{
-       // duplicatesStrategy = DuplicatesStrategy.WARN
-
+        dependsOn(":compile:jar")
         from(configurations.compileClasspath.get().files
             .filter { it.name == "snoopy_compile.jar" }
             .map{ if(it.isDirectory) it else zipTree(it)})
-        //dependsOn(":snoopy_compile:copyJar")
-
-        /*from("libs/")
-        manifest{
-            attributes("Class-Path" to "snoopy_compile.jar")
-        }*/
     }
 }
