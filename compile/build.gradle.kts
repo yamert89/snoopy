@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.github.yamert89.snoopy"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -14,8 +14,6 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    //testImplementation("org.junit.platform:junit-platform-suite-engine:1.10.1")
-    //testImplementation("org.junit.platform:junit-platform-suite-api:1.10.1")
     testImplementation("ch.qos.logback:logback-classic:1.4.11")
     implementation(project(":meta"))
     implementation("org.ow2.asm:asm-util:9.5")
@@ -49,7 +47,6 @@ tasks{
         useJUnitPlatform()
         environment("snoopy.execPath", project.layout.buildDirectory.get().asFile.path)
         systemProperty("junit.jupiter.testclass.order.default", "org.junit.jupiter.api.ClassOrderer\$OrderAnnotation")
-        //systemProperty("junit.jupiter.testinstance.lifecycle.default", "per_class")
     }
 
     compileJava {
