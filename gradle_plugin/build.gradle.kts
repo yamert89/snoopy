@@ -4,7 +4,7 @@ plugins {
     id("maven-publish")
 }
 
-version = "1.0"
+version = "1.0.0"
 group = "com.github.yamert89.snoopy"
 
 repositories {
