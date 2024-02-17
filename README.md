@@ -46,6 +46,14 @@ Field-level filter has the highest priority.
 The plugin produces the task named **snoopyCompile** and extension named **snoopy**.
 Your **build.gradle.kts** will look like this:
 
+    plugins {
+        id("java")
+        id("com.github.yamert89.snoopy")
+    }
+
+    dependencies {
+        implementation("com.github.yamert89.snoopy:meta:1.0.0")
+    }
     tasks{
         snoopyCompile {
             dependsOn(classes)
@@ -76,7 +84,7 @@ Your **build.gradle.kts** will look like this:
             maven("https://jitpack.io")
         }
         plugins {
-            id("com.github.yamert89.snoopy") version "master-SNAPSHOT"
+            id("com.github.yamert89.snoopy") version "1.0.0"
         }
     }
     
