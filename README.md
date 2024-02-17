@@ -1,6 +1,6 @@
 # snoopy
 
-Roughly speaking (what I'm trying to say is), this is a simple tool for injecting sql strings into java classes at the
+Roughly speaking, this is a simple tool for injecting sql strings into java classes at the
 compilation stage.
 
 > Note! This should not be considered as a production-ready tool. It's more like experiment
