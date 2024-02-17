@@ -13,8 +13,8 @@ compilation stage.
 
 ### How to use it in source code?
 
-1) add the file with the name **SQL1.sql** to **/resources**
-2) add the class-level annotation
+- add the file with the name **SQL1.sql** to **/resources**
+- add the class-level annotation
 
     @InjectSQL(fieldsStartWith = "SQL")
     public class ReplaceSQLExample {
@@ -30,7 +30,7 @@ or add field-level annotation. It has the highest priority.
         public final String regularField = "regularField";
     }
 
-3) Additionally, you can add a custom filter
+- Additionally, you can add a custom filter
 
     @InjectSQL(fieldsStartWith = "SQL", filter = TestFilter2.class)
     public class Filters {
