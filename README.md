@@ -16,11 +16,11 @@ compilation stage.
 - add the file with the name **SQL1.sql** to **/resources**
 - add the class-level annotation
 
-    @InjectSQL(fieldsStartWith = "SQL")
-    public class ReplaceSQLExample {
-        public String SQL1;
-        public final String regularField = "regularField";
-    }
+        @InjectSQL(fieldsStartWith = "SQL")
+        public class ReplaceSQLExample {
+            public String SQL1;
+            public final String regularField = "regularField";
+        }
 
 or add field-level annotation. It has the highest priority.
 
@@ -32,12 +32,12 @@ or add field-level annotation. It has the highest priority.
 
 - Additionally, you can add a custom filter
 
-    @InjectSQL(fieldsStartWith = "SQL", filter = TestFilter2.class)
-    public class Filters {
-        @InjectSQLField(name = "SQL6", filter = TestFilter.class)
-        String SQL;
-        String SQL2;
-    }
+        @InjectSQL(fieldsStartWith = "SQL", filter = TestFilter2.class)
+        public class Filters {
+            @InjectSQLField(name = "SQL6", filter = TestFilter.class)
+            String SQL;
+            String SQL2;
+        }
 
 Field-level filter has the highest priority.
 
