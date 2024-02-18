@@ -11,6 +11,11 @@ compilation stage.
 - **"gradle_plugin"** is a core implementation wrapped as plugin
 - **"meta"** contains public annotations
 
+### How it works?
+
+This tool uses the ASM library to manipulate bytecode. The corresponding Gradle task should execute it after general
+compilation.
+
 ### How to use it in source code?
 
 - add the file with the name **SQL1.sql** to **/resources**
@@ -24,11 +29,11 @@ compilation stage.
 
 or add field-level annotation. It has the highest priority.
 
-    public class ReplaceSQLFieldExample {
-        @InjectSQLField(name = "SQL1")
-        public String SQL;
-        public final String regularField = "regularField";
-    }
+          public class ReplaceSQLFieldExample {
+              @InjectSQLField(name = "SQL1")
+              public String SQL;
+              public final String regularField = "regularField";
+          }
 
 - Additionally, you can add a custom filter
 
@@ -105,4 +110,4 @@ Your **build.gradle.kts** will look like this:
 
 All of these limitations may be fixed in the future.
 
-Check how this work: https://github.com/yamert89/snoopyExample
+Check how this work with an example: https://github.com/yamert89/snoopyExample
