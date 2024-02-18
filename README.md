@@ -1,3 +1,5 @@
+[![](https://jitpack.io/v/yamert89/snoopy.svg)](https://jitpack.io/#yamert89/snoopy)
+
 # snoopy
 
 Roughly speaking, this is a simple tool for injecting sql strings into java classes at the
